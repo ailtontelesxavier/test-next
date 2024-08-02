@@ -39,7 +39,7 @@ export default function UserFormPage({ params }: { params: { id: number } }) {
           setUpdated_at(response.data.updated_at);
         }
       });
-    } catch (error) {
+    } catch (error:any) {
       if (error.response) {
         setError(error.response.data.detail + ";" + error.message);
       }
@@ -61,7 +61,7 @@ export default function UserFormPage({ params }: { params: { id: number } }) {
           }
         })
         .catch((error) => setError("Error interno: " + error));
-    } catch (error) {
+    } catch (error: any) {
       if (error.response) {
         setError(error.response.data.detail + "; " + error.message);
       }

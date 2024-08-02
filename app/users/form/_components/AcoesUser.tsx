@@ -93,7 +93,7 @@ export default function AcoesUser({id}: {id: number}) {
           }
         })
         .catch((error) => setError("Error interno: " + error));
-    } catch (error) {
+    } catch (error: any) {
       if (error.response) {
         setError(error.response.data.detail + "; " + error.message);
       }

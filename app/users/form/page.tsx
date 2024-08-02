@@ -64,7 +64,7 @@ export default function UserFormPage() {
             limparForm();
           }
         }).catch((error) => setError("Error interno: " + error));
-    } catch (error) {
+    } catch (error: any) {
       if (error.response) {
         setError(error.response.data.detail + "; " + error.message);
       }
