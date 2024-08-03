@@ -60,14 +60,14 @@ export default function UsersPage({ }: Props) {
 
   useEffect(() => {
     obterUsers();
+    async function obterUsers() {
+      await api.get(`/users/?page=${page}&page_size=10`).then((response) => {
+        setUsers(response.data.users)
+        setTotal(response.data.total_records)
+      })
+    }
   }, [page]);
 
-  async function obterUsers() {
-    await api.get(`/users/?page=${page}&page_size=10`).then((response) => {
-      setUsers(response.data.users)
-      setTotal(response.data.total_records)
-    })
-  }
 
   return (
     <div className="flex flex-col gap-5  w-full">

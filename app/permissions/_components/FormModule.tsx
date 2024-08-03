@@ -10,7 +10,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FormEvent, useEffect, useState } from "react";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { PlusIcon, Pencil2Icon } from "@radix-ui/react-icons";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -18,14 +17,12 @@ import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { AlertSuccess } from "@/components/AlertSuccess";
 import { AlertDestructive } from "@/components/AlertDestructive";
-import { useRouter } from "next/navigation";
 
-export default function FormRole({ id, setIsBusca }: { id: number, setIsBusca: Function }) {
-  const router = useRouter();
+export default function FormModule({ id, setIsBusca }: { id: number, setIsBusca: Function }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [selectOption, setSelectOption] = useState("");
-  const [perfil, setPerfil] = useState<any>({});
+  const [module, setModule] = useState<any>({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   function hangleOnValueChange(value: string) {
@@ -42,16 +39,16 @@ export default function FormRole({ id, setIsBusca }: { id: number, setIsBusca: F
     setModalIsOpen(false);
   }
 
-  function handlePerfil(event: FormEvent) {
+  function handleModule(event: FormEvent) {
     event.preventDefault();
 
-    if (perfil.name.length < 3) {
+    if (module.title.length < 3) {
       setError("O nome deve ter pelo menos 3 caracteres");
       return;
     }
 
     if(id){
-      updatePerfil();
+      updateModule();
       setIsBusca(true);
       setError("");
       return;
@@ -69,13 +66,13 @@ export default function FormRole({ id, setIsBusca }: { id: number, setIsBusca: F
     }
 
     if (id) {
-      getPerfil();
+      getModule();
     }
 
-    async function getPerfil() {
-      await api.get(`/permissoes/role/${id}`).then((response) => {
+    async function getModule() {
+      await api.get(`/permissoes/module/${id}`).then((response) => {
         console.log(response);
-        setPerfil(response.data);
+        setModule(response.data);
       });
     }
   }, [id, modalIsOpen, setIsBusca]);
@@ -83,8 +80,8 @@ export default function FormRole({ id, setIsBusca }: { id: number, setIsBusca: F
   async function create() {
     try {
       await api
-        .post("/permissoes/role/", {
-          name: perfil.name,
+        .post("/permissoes/module/", {
+          title: module.title,
         })
         .then((response: any) => {
           if (response.status === 201) {
@@ -99,12 +96,12 @@ export default function FormRole({ id, setIsBusca }: { id: number, setIsBusca: F
     }
   }
 
-  async function updatePerfil() {
+  async function updateModule() {
     try {
       await api
-        .put("/permissoes/role/"+id, {
+        .put("/permissoes/module/"+id, {
           id: id,
-          name: perfil.name,
+          title: module.title,
         })
         .then((response: any) => {
           if (response.status === 200) {
@@ -121,8 +118,7 @@ export default function FormRole({ id, setIsBusca }: { id: number, setIsBusca: F
 
   function setOpenChange(open: boolean) {
     setModalIsOpen(open)
-    console.log(open)
-}
+  }
 
   return (
     <div className="flex gap-2">
@@ -144,10 +140,10 @@ export default function FormRole({ id, setIsBusca }: { id: number, setIsBusca: F
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Cadastro de Perfil</DialogTitle>
+            <DialogTitle>Cadastro de Modulo</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <form onSubmit={handlePerfil}>
+          <form onSubmit={handleModule}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 {id > 0 && (
@@ -161,21 +157,21 @@ export default function FormRole({ id, setIsBusca }: { id: number, setIsBusca: F
                       placeholder="id"
                       className="col-span-3"
                       disabled={true}
-                      value={perfil.id ?? ""}
+                      value={module.id ?? ""}
                     />
                   </>
                 )}
-                <Label htmlFor="name" className="text-right">
+                <Label htmlFor="title" className="text-right">
                   Nome
                 </Label>
                 <Input
-                  id="name"
+                  id="title"
                   type="text"
                   placeholder="Nome"
                   className="col-span-3"
-                  value={perfil.name ?? ""}
+                  value={module.title ?? ""}
                   onChange={(e) =>
-                    setPerfil({ ...perfil, name: e.target.value })
+                    setModule({ ...module, title: e.target.value })
                   }
                 />
               </div>

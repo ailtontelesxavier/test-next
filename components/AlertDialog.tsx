@@ -24,8 +24,11 @@ export default function AlertDialogComp({
   param: any;
   acao: Function;
 }) {
+  function setOpenChange(open: boolean) {
+    console.log(open);
+  }
   return (
-    <AlertDialog>
+    <AlertDialog onOpenChange={setOpenChange}>
       <AlertDialogTrigger asChild>
         <Button variant={"outline"} type="button" size={"sm"} title="excluir">
           <Trash2Icon className="h-4 w-4" />
@@ -38,7 +41,9 @@ export default function AlertDialogComp({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={() => acao(param)}>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={() => acao(param)}>
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
