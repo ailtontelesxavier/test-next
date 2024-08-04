@@ -2,6 +2,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Nav } from "./nav";
 
 type Props = {};
@@ -11,7 +13,9 @@ import {
   LayoutDashboard,
   UsersRound,
   Settings,
-  ChevronRight
+  ChevronRight,
+  Lock,
+  File,
 } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -19,12 +23,71 @@ import { useWindowWidth } from "@react-hook/window-size";
 
 export default function SideNavbar({}: Props) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isPermissionSubmenuOpen, setIsPermissionSubmenuOpen] = useState(false);
 
   const onlyWidth = useWindowWidth();
   const mobileWidth = onlyWidth < 768;
+  const router = useRouter();
+
+  const links = [
+    {
+      title: "Dashboard",
+      href: "/",
+      icon: LayoutDashboard,
+      variant: "default",
+    },
+    {
+      title: "Users",
+      href: "/users",
+      icon: UsersRound,
+      variant: "ghost",
+    },
+    {
+      title: "Permission",
+      href: "#",
+      icon: Lock,
+      variant: "ghost",
+      submenu: [
+        {
+          title: "Perfil",
+          href: "/permissions/",
+          icon: File,
+          variant: "ghost",
+        },
+        {
+          title: "Permissoes",
+          href: "/permissions/permission",
+          icon: File,
+          variant: "ghost",
+        },
+        {
+          title: "Module",
+          href: "/permissions/module",
+          icon: File,
+          variant: "ghost",
+        },
+      ],
+    },
+    {
+      title: "Ordrs",
+      href: "/orders",
+      icon: ShoppingCart,
+      variant: "ghost",
+    },
+    {
+      title: "Settings",
+      href: "/settings",
+      icon: Settings,
+      variant: "ghost",
+    },
+  ];
 
   function toggleSidebar() {
     setIsCollapsed(!isCollapsed);
+  }
+
+  function togglePermissionSubmenu() {
+    setIsPermissionSubmenuOpen(!isPermissionSubmenuOpen);
   }
 
   return (
@@ -42,32 +105,14 @@ export default function SideNavbar({}: Props) {
       )}
       <Nav
         isCollapsed={mobileWidth ? true : isCollapsed}
-        links={[
-          {
-            title: "Dashboard",
-            href: "/",
-            icon: LayoutDashboard,
-            variant: "default"
-          },
-          {
-            title: "Users",
-            href: "/users",
-            icon: UsersRound,
-            variant: "ghost"
-          },
-          {
-            title: "Ordrs",
-            href: "/orders",
-            icon: ShoppingCart,
-            variant: "ghost"
-          },
-          {
-            title: "Settings",
-            href: "/settings",
-            icon: Settings,
-            variant: "ghost"
-          }
-        ]}
+        links={links.map((link) => ({
+          ...link,
+          isActive: router.pathname === link.href,
+          submenu: link.submenu?.map((sublink) => ({
+            ...sublink,
+            isActive: router.pathname === sublink.href,
+          })),
+        }))}
       />
     </div>
   );
