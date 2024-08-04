@@ -25,7 +25,6 @@ export default function ComboboxPermission({
   const listRef = useRef(null);
 
   useEffect(() => {
-    console.log(page);
     getModel(page);
 
     async function getModel(page) {
@@ -36,7 +35,7 @@ export default function ComboboxPermission({
             `/permissoes/permission/search/?title=${searchTerm}&page=${page}&page_size=5`
           )
           .then((response) => {
-            console.log(response.data.permissions);
+           //console.log(response.data.permissions);
             setOptions(response.data.permissions)
             setTotal(response.data.total_records);
           })
@@ -109,6 +108,11 @@ export default function ComboboxPermission({
                 </li>
               ))}
             </ul>
+            {loading && (
+            <div className="flex justify-center py-2">
+              <span>Loading more...</span>
+            </div>
+          )}
               <div>
                 <PaginationActionsApiHover
                   itensPerPage={5}

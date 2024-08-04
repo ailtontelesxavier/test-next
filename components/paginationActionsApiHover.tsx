@@ -96,7 +96,11 @@ export function PaginationActionsApiHover({
             {pageIndex > 1 ? (
               <span
                 className="goup gap-2 border p-2 hover:cursor-pointer transition-colors duration-300 hover:text-slate-500"
-                onMouseOver={() => setPageIndex(pageIndex - 1)}
+                onMouseOver={() => {
+                  setTimeout(() => {
+                    setPageIndex(pageIndex - 1);
+                  }, 600);
+                }}
                 onClick={() => {
                   setPageIndex(pageIndex - 1);
                 }}
@@ -119,7 +123,11 @@ export function PaginationActionsApiHover({
             {pageIndex < Math.ceil(totalPosts / postsPerPage) ? (
               <span
                 className="goup gap-2 border p-2 hover:cursor-pointer transition-colors duration-300 hover:text-slate-500"
-                onMouseOver={() => setPageIndex(pageIndex + 1)}
+                onMouseOver={() => {
+                  setTimeout(() => {
+                    setPageIndex(pageIndex + 1);
+                  }, 600);
+                }}
                 onClick={() => {
                   setPageIndex(pageIndex + 1);
                 }}

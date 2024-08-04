@@ -9,22 +9,24 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Button } from "@/components/ui/button"
 import ComboboxPerfil from "../_components/ComboboxPerfil"
 import ComboboxPermission from "../_components/ComboboxPermission"
+import { FastForward } from "lucide-react"
 
 export default function Component() {
   const [selectedProfile, setSelectedProfile] = useState(null)
   const [perfil, setPerfil] = useState({id:0, name:'', permissions:[]})
   const [permissions, setPermissions] = useState([])
-  const [searchText, setSearchText] = useState("")
+
 
   useEffect(() => {
     console.log(perfil)
+    setPerfil(perfil)
   },[perfil])
 
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>Manage User Profiles</CardTitle>
-        <CardDescription>Configure permissions for each user profile.</CardDescription>
+        <CardTitle>Gerenciar Permissão por Perfil</CardTitle>
+        <CardDescription>Configura permissão buscando por perfil.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -34,7 +36,12 @@ export default function Component() {
           </div>
           <div>
             <Label htmlFor="search">Adicionar Permissão</Label>
-            <ComboboxPermission setObjet={setPermissions} objeto={permissions} />
+            <div className="flex gap-2">
+              <ComboboxPermission setObjet={setPermissions} objeto={permissions} />
+              <Button title="Adicionar Permissão">
+                <FastForward className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
         <Separator className="my-6" />
@@ -60,7 +67,6 @@ export default function Component() {
         </Table>
       </CardContent>
       <CardFooter>
-        <Button>Save Changes</Button>
       </CardFooter>
     </Card>
   )
