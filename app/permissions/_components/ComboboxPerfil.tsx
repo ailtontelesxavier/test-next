@@ -4,10 +4,10 @@ import { useState, useMemo, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import api from "@/lib/api"
 
-export default function ComboboxModule(
-  {objeto}: {objeto:any}) {
+export default function ComboboxPerfil(
+  {objeto, setObjet}: {objeto:any, setObjet: Function}) {
   const [searchTerm, setSearchTerm] = useState(
-    objeto.module && (objeto.module.title ?? "")
+    objeto.name ?? ""
   )
   const [selectedOption, setSelectedOption] = useState(null)
   const [hasFocus, setHasFocus] = useState(false)
@@ -18,10 +18,10 @@ export default function ComboboxModule(
     getModel();
 
     async function getModel() {
-      await api.get(`/permissoes/module/find/?title=`+searchTerm)
+      await api.get(`/permissoes/role/find/?name=`+searchTerm)
         .then(response => {
-          console.log(response.data.modules)
-          setOptions(response.data.modules)
+          console.log(response.data.roles)
+          setOptions(response.data.roles)
         })
         .catch(error => {
           console.error("There was an error fetching the options!", error)
@@ -30,7 +30,7 @@ export default function ComboboxModule(
   }, [searchTerm, objeto])
 
   const filteredOptions = useMemo(() => {
-    return options.filter((option) => option.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    return options.filter((option) => option.name.toLowerCase().includes(searchTerm.toLowerCase()))
   }, [searchTerm, options])
   function handleInputChange(e:any) {
     setSearchTerm(e.target.value)
@@ -38,10 +38,10 @@ export default function ComboboxModule(
   }
   function handleOptionSelect(option:any) {
     setSelectedOption(option)
-    setSearchTerm(option.title)
-    objeto.module_id = option.id
-    objeto.module.id = option.id
-    objeto.module.title = option.title  
+    setSearchTerm(option.name)
+    objeto.id = option.id
+    objeto.name = option.name 
+    setObjet(option)
     setHasFocus(false)
   }
 
@@ -75,7 +75,7 @@ export default function ComboboxModule(
                 }`}
                 onMouseDown={() => handleOptionSelect(option)}
               >
-                {option.title}
+                {option.id} - {option.name}
               </li>
             ))}
           </ul>
