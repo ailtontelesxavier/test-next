@@ -9,6 +9,8 @@ import { AlertSuccess } from "@/components/AlertSuccess";
 import { AlertDestructive } from "@/components/AlertDestructive";
 import FormPermission from "../_components/FormPermission";
 import ComboboxModule from "../_components/ComboboxModule";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export default function PermissonView() {
   const [error, setError] = useState("");
@@ -17,10 +19,10 @@ export default function PermissonView() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState<number>(1);
   const [isBusca, setIsBusca] = useState(true);
+  let [filterModulo] = useState({module:{id:0, title:''}})
 
   useEffect(() => {
-    let data_temp = {};
-    let list_permission:any = [];
+    console.log(filterModulo)
 
     if (isBusca) obterPermissions();
 
@@ -28,13 +30,13 @@ export default function PermissonView() {
 
     async function obterPermissions() {
       await api
-        .get(`/permissoes/permission/?page=${page}&page_size=10`)
+        .get(`/permissoes/permission/?module=${filterModulo.module.id}&page=${page}&page_size=10`)
         .then((response) => {
           setPermissions(response.data.permissions);
           setTotal(response.data.total_records);
         });
     }
-  }, [page, isBusca]);
+  }, [page, isBusca, filterModulo]);
 
   async function deletePermission(id: number) {
     try {
@@ -54,6 +56,10 @@ export default function PermissonView() {
     }
   }
 
+  function filtrar() {
+    setIsBusca(true);
+  }
+
 
   return (
     <div className="grid w-full">
@@ -64,6 +70,13 @@ export default function PermissonView() {
             <h3>Permissões</h3>
             <div>
               <FormPermission setIsBusca={setIsBusca} id={0} />
+            </div>
+          </div>
+          <div>
+            <Label>Filtro por Modulo</Label>
+            <div className="flex gap-2">
+              <ComboboxModule objeto={filterModulo} />
+              <Button onClick={() => filtrar()}>Filtrar</Button>
             </div>
           </div>
           <table className="hidden md:block w-full">

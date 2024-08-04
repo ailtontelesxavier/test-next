@@ -4,7 +4,8 @@ import { useState, useMemo, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import api from "@/lib/api"
 
-export default function ComboboxModule({objeto}: {objeto:any}) {
+export default function ComboboxModule(
+  {objeto}: {objeto:any}) {
   const [searchTerm, setSearchTerm] = useState(
     objeto.module && (objeto.module.title ?? "")
   )
@@ -26,7 +27,7 @@ export default function ComboboxModule({objeto}: {objeto:any}) {
           console.error("There was an error fetching the options!", error)
         })
     }
-  }, [searchTerm])
+  }, [searchTerm, objeto])
 
   const filteredOptions = useMemo(() => {
     return options.filter((option) => option.title.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -39,7 +40,8 @@ export default function ComboboxModule({objeto}: {objeto:any}) {
     setSelectedOption(option)
     setSearchTerm(option.title)
     objeto.module_id = option.id
-    objeto.module.title = option.title
+    objeto.module.id = option.id
+    objeto.module.title = option.title  
     setHasFocus(false)
   }
 

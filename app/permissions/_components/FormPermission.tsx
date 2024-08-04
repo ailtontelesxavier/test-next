@@ -126,8 +126,7 @@ export default function FormPermission({ id, setIsBusca }: { id: number, setIsBu
 
   function setOpenChange(open: boolean) {
     setModalIsOpen(open)
-    console.log(open)
-}
+  }
 
   return (
     <div className="flex gap-2">
