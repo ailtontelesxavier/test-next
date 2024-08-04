@@ -56,7 +56,7 @@ export default function PermissonView() {
     <div className="grid w-full">
       <PageTitle title="Gestao de Permissao" />
       <section className="mt-3 transition-all p-2 rounded-md w-1/2">
-        <CardContent className="min-w-96">
+        <CardContent className="min-w-80 md:w-[450px]">
           <div className="flex flex-row justify-between">
             <h3>Perfil</h3>
             <div>
