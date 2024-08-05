@@ -2,8 +2,6 @@
 
 import { useState, useMemo, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
-import { PaginationActionsApi } from "@/components/paginationActionsApi";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import api from "@/lib/api";
 import { PaginationActionsApiHover } from "@/components/paginationActionsApiHover";
 
@@ -40,10 +38,10 @@ export default function ComboboxPermission({
             setTotal(response.data.total_records);
           })
           .catch((error) => {
-            console.error("There was an error fetching the options!", error);
+            console.error("error interno", error);
           });
       } catch (error) {
-        console.error("There was an error fetching the options!", error);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
