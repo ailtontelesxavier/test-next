@@ -14,7 +14,7 @@ export default function ComboboxPermission({
   objeto: any;
   setObjet: Function;
 }) {
-  const [searchTerm, setSearchTerm] = useState(objeto.name ?? "");
+  const [searchTerm, setSearchTerm] = useState(objeto.username ?? "");
   const [selectedOption, setSelectedOption] = useState(null);
   const [hasFocus, setHasFocus] = useState(false);
   const [options, setOptions] = useState([]);

@@ -55,6 +55,12 @@ export default function SideNavbar({}: Props) {
           variante: "ghost"
         },
         {
+          title:"Perfil por Usuario",
+          href:"/permissions/gestao-permissao-user",
+          icon: File,
+          variante: "ghost"
+        },
+        {
           title: "Perfil",
           href: "/permissions/perfil",
           icon: File,
