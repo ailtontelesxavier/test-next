@@ -33,16 +33,16 @@ export default function ComboboxPermission({
         setLoading(true);
         await api
           .get(
-            `/permissoes/permission/search/?title=${searchTerm}&page=${page}&page_size=5`
+            `/users/user-like/${searchTerm}?page=${page}&page_size=5`
           )
           .then((response) => {
-            console.log(response.data.permissions);
-            setOptions(response.data.permissions)
+            console.log(response.data.rows);
+            setOptions(response.data.rows)
             setTotal(response.data.total_records);
              setOptions((dados) =>
               page === 1
-                ? response.data.permissions
-                : [...dados, ...response.data.permissions]
+                ? response.data.rows
+                : [...dados, ...response.data.rows]
             );
           })
           .catch((error) => {
@@ -58,7 +58,7 @@ export default function ComboboxPermission({
 
   const filteredOptions = useMemo(() => {
     return options.filter((option) =>
-      option.name.toLowerCase().includes(searchTerm.toLowerCase())
+      option?.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm, options]);
   function handleInputChange(e: any) {
@@ -122,7 +122,7 @@ export default function ComboboxPermission({
                   }`}
                   onMouseDown={() => handleOptionSelect(option)}
                 >
-                  {option.id} - {option.name} - {option.module.title}
+                  {option.id} - {option.username} - {option.email}
                 </li>
               ))}
             </ul>

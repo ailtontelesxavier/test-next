@@ -33,7 +33,7 @@ export default function GestaoPermissaoUser() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [perfil, setPerfil] = useState({ id: 0, name: "", permissions: [] });
+  const [users, setUsers] = useState({rows:{ id: 0, username: "", email: '' }});
   const [permission, setPermission] = useState({ id: 0 });
 
   useEffect(() => {
