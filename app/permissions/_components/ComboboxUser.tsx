@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import api from "@/lib/api";
 import { PaginationActionsApiHover } from "@/components/paginationActionsApiHover";
 
-export default function ComboboxPermission({
+export default function ComboboxUser({
   objeto,
   setObjet,
 }: {
@@ -57,10 +57,9 @@ export default function ComboboxPermission({
   }, [searchTerm, objeto, page]);
 
   const filteredOptions = useMemo(() => {
-    return options.filter((option) =>
-      option?.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm, options]);
+    return options.filter((option) => option.username.toLowerCase().includes(searchTerm.toLowerCase()))
+  }, [searchTerm, options])
+
   function handleInputChange(e: any) {
     setSearchTerm(e.target.value);
     setSelectedOption(null);
@@ -68,10 +67,10 @@ export default function ComboboxPermission({
   }
   function handleOptionSelect(option: any) {
     setSelectedOption(option);
-    setSearchTerm(option.name);
+    setSearchTerm(option.username);
+    console.log(option)
     objeto.id = option.id;
-    objeto.name = option.name;
-    objeto.module = option.module.title;
+    objeto.username = option.username;
     setObjet(option);
     setHasFocus(false);
   }
@@ -126,9 +125,6 @@ export default function ComboboxPermission({
                 </li>
               ))}
             </ul>
-              <h3>
-                pagina:{page} - Total Registros:{total}
-              </h3>
               <div>
                 <PaginationActionsApiHover
                   itensPerPage={5}

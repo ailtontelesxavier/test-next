@@ -21,29 +21,27 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import ComboboxPerfil from "../_components/ComboboxPerfil";
-import ComboboxPermission from "../_components/ComboboxPermission";
 import { FastForward } from "lucide-react";
 import { AlertSuccess } from "@/components/AlertSuccess";
 import { AlertDestructive } from "@/components/AlertDestructive";
 import api from "@/lib/api";
 import AlertDialogComp from "@/components/AlertDialog";
+import ComboboxUser from "../_components/ComboboxUser";
 
 export default function GestaoPermissaoUser() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState({rows:{ id: 0, username: "", email: '' }});
+  const [user, setUser] = useState({rows:{ id: 0, username: "", email: '' }});
   const [permission, setPermission] = useState({ id: 0 });
 
   useEffect(() => {
-    console.log(perfil);
-    setPerfil(perfil);
-  }, [perfil]);
+    console.log(user);
+    setUser(user);
+  }, [user]);
 
-  async function addPermission() {
-    console.log(permission);
-    console.log(perfil);
+  /* async function addPermission() {
+    console.log(users);
     try {
       setLoading(true);
       await api
@@ -65,17 +63,17 @@ export default function GestaoPermissaoUser() {
     } finally {
       setLoading(false);
     }
-  }
+  } */
 
-  async function getPerfil() {
+  /* async function getUsers() {
     try {
       setLoading(true);
-      console.log(perfil.id)
+      console.log(users.id)
       await api
-        .get(`/permissoes/role/full/` + perfil.id)
+        .get(`/permissoes/role/full/` + users.id)
         .then((response) => {
           console.log(response.data);
-          setPerfil(response.data);
+          setUsers(response.data);
         }).catch((error) => {
           console.error("error interno", error);
         });
@@ -84,8 +82,8 @@ export default function GestaoPermissaoUser() {
     } finally {
       setLoading(false);
     }
-  }
-  async function deleteRolePermission(permissao: any) {
+  } */
+  /* async function deleteRolePermission(permissao: any) {
     try {
       console.log(perfil.id)
       console.log(permissao.id)
@@ -103,11 +101,11 @@ export default function GestaoPermissaoUser() {
         setError(error.response.data.detail + "; " + error.message);
       }
     }
-  }
+  } */
 
   function limpar() {
-    setPerfil({ id: 0, name: "", permissions: [] });
-    setPermission({ id: 0 });
+    setUser({ id: 0, name: "", permissions: [] });
+    //setPermission({ id: 0 });
   }
 
   return (
@@ -121,13 +119,13 @@ export default function GestaoPermissaoUser() {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="profile">Selecione um Perfil</Label>
-            <ComboboxPerfil setObjet={setPerfil} objeto={perfil} />
+            <Label htmlFor="profile">Selecione um Usuario</Label>
+            <ComboboxUser setObjet={setUser} objeto={user} />
           </div>
           <div>
             <Label htmlFor="search">Adicionar Permissão</Label>
             <div className="flex gap-2">
-              <ComboboxPermission
+              {/* <ComboboxPermission
                 setObjet={setPermission}
                 objeto={permission}
               />
@@ -137,7 +135,7 @@ export default function GestaoPermissaoUser() {
                 onClick={() => addPermission()}
               >
                 <FastForward className="h-4 w-4" />
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
@@ -152,7 +150,7 @@ export default function GestaoPermissaoUser() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {perfil?.permissions.map((permission) => (
+            {/* {perfil?.permissions.map((permission) => (
               <TableRow key={permission.id}>
                 <TableCell className="font-medium">{permission.id}</TableCell>
                 <TableCell className="font-medium">
@@ -168,7 +166,7 @@ export default function GestaoPermissaoUser() {
                       />
                 </TableCell>
               </TableRow>
-            ))}
+            ))} */}
           </TableBody>
         </Table>
       </CardContent>
