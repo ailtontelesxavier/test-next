@@ -27,6 +27,7 @@ import { FastForward } from "lucide-react";
 import { AlertSuccess } from "@/components/AlertSuccess";
 import { AlertDestructive } from "@/components/AlertDestructive";
 import api from "@/lib/api";
+import AlertDialogComp from "@/components/AlertDialog";
 
 export default function Component() {
   const [error, setError] = useState("");
@@ -36,7 +37,7 @@ export default function Component() {
   const [permission, setPermission] = useState({ id: 0 });
 
   useEffect(() => {
-    //console.log(perfil);
+    console.log(perfil);
     setPerfil(perfil);
   }, [perfil]);
 
@@ -82,6 +83,25 @@ export default function Component() {
       console.error("Error:", error);
     } finally {
       setLoading(false);
+    }
+  }
+  async function deleteRolePermission(permissao: any) {
+    try {
+      console.log(perfil.id)
+      console.log(permissao.id)
+      await api
+        .delete(`/permissoes/role-permission/role_by_permission/?role_id=${perfil.id}&permission_id=${permissao.id}`)
+        .then((response: any) => {
+          if (response.status === 200) {
+            setSuccess("Excluido com sucesso");
+            getPerfil();
+          }
+        })
+        .catch((error) => setError("Error interno: " + error));
+    } catch (error: any) {
+      if (error.response) {
+        setError(error.response.data.detail + "; " + error.message);
+      }
     }
   }
 
@@ -139,7 +159,14 @@ export default function Component() {
                   {permission.module.title}
                 </TableCell>
                 <TableCell>{permission.name}</TableCell>
-                <TableCell className="text-right"></TableCell>
+                <TableCell className="text-right">
+                  <AlertDialogComp
+                        title="Tem certeza que deseja excluir?"
+                        description=""
+                        param={permission}
+                        acao={deleteRolePermission}
+                      />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
