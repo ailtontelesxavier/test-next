@@ -36,7 +36,7 @@ export default function GestaoPermissaoUser() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({id: 0, username: "", email: '' });
+  const [user, setUser] = useState({ id: 0, username: "", email: '' });
   const [perfil, setPerfil] = useState({ id: 0 });
   const [perfilList, setPerfilList] = useState<any>();
 
@@ -116,7 +116,8 @@ export default function GestaoPermissaoUser() {
   function limpar() {
     setUser({ id: 0, name: "", roles: [] });
     setPerfil({ id: 0 });
-    setPerfilList({rows:[]});
+    setPerfilList({ rows: [] });
+    setPage(1);
   }
 
   return (
@@ -158,7 +159,7 @@ export default function GestaoPermissaoUser() {
           </TableHeader>
           <TableBody>
             {console.log(perfilList)}
-             {perfilList?.rows.map((perfil) => (
+            {perfilList?.rows.map((perfil) => (
               <TableRow key={perfil.id}>
                 <TableCell className="font-medium">{perfil.id}</TableCell>
                 <TableCell className="font-medium">
@@ -166,24 +167,24 @@ export default function GestaoPermissaoUser() {
                 </TableCell>
                 <TableCell className="text-right">
                   <AlertDialogComp
-                        title="Tem certeza que deseja excluir?"
-                        description=""
-                        param={perfil}
-                        acao={deleteRoleUser}
-                      />
+                    title="Tem certeza que deseja excluir?"
+                    description=""
+                    param={perfil}
+                    acao={deleteRoleUser}
+                  />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
         <section>
-        <PaginationActionsApi
-          itensPerPage={10}
-          count={total}
-          setPageIndex={setPage}
-          pageIndex={page}
-        />
-      </section>
+          <PaginationActionsApi
+            itensPerPage={10}
+            count={total}
+            setPageIndex={setPage}
+            pageIndex={page}
+          />
+        </section>
       </CardContent>
       <CardFooter>
         <div className="flex w-full items-end justify-end">

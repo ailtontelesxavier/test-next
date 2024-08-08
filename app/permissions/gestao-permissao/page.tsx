@@ -28,8 +28,11 @@ import { AlertSuccess } from "@/components/AlertSuccess";
 import { AlertDestructive } from "@/components/AlertDestructive";
 import api from "@/lib/api";
 import AlertDialogComp from "@/components/AlertDialog";
+import { PaginationActionsApi } from "@/components/paginationActionsApi";
 
 export default function Component() {
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState<number>(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -76,6 +79,7 @@ export default function Component() {
         .then((response) => {
           console.log(response.data);
           setPerfil(response.data);
+          setTotal(response.data.total_records)
         }).catch((error) => {
           console.error("error interno", error);
         });
@@ -108,6 +112,7 @@ export default function Component() {
   function limpar() {
     setPerfil({ id: 0, name: "", permissions: [] });
     setPermission({ id: 0 });
+    setPage(1);
   }
 
   return (
@@ -161,16 +166,24 @@ export default function Component() {
                 <TableCell>{permission.name}</TableCell>
                 <TableCell className="text-right">
                   <AlertDialogComp
-                        title="Tem certeza que deseja excluir?"
-                        description=""
-                        param={permission}
-                        acao={deleteRolePermission}
-                      />
+                    title="Tem certeza que deseja excluir?"
+                    description=""
+                    param={permission}
+                    acao={deleteRolePermission}
+                  />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        <section>
+          <PaginationActionsApi
+            itensPerPage={10}
+            count={total}
+            setPageIndex={setPage}
+            pageIndex={page}
+          />
+        </section>
       </CardContent>
       <CardFooter>
         <div className="flex w-full items-end justify-end">
