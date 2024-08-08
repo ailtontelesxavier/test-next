@@ -38,7 +38,7 @@ export default function SideNavbar({}: Props) {
     },
     {
       title: "Users",
-      href: "/users",
+      href: "/app/users",
       icon: UsersRound,
       variant: "ghost",
     },
@@ -50,31 +50,31 @@ export default function SideNavbar({}: Props) {
       submenu: [
         {
           title:"Gestao Perfil",
-          href:"/permissions/gestao-permissao",
+          href:"/app/permissions/gestao-permissao",
           icon: File,
           variante: "ghost"
         },
         {
           title:"Perfil por Usuario",
-          href:"/permissions/gestao-permissao-user",
+          href:"/app/permissions/gestao-permissao-user",
           icon: File,
           variante: "ghost"
         },
         {
           title: "Perfil",
-          href: "/permissions/perfil",
+          href: "/app/permissions/perfil",
           icon: File,
           variant: "ghost",
         },
         {
           title: "Permissoes",
-          href: "/permissions/permission",
+          href: "/app/permissions/permission",
           icon: File,
           variant: "ghost",
         },
         {
           title: "Module",
-          href: "/permissions/module",
+          href: "/app/permissions/module",
           icon: File,
           variant: "ghost",
         },
@@ -109,7 +109,7 @@ export default function SideNavbar({}: Props) {
           <Button
             onClick={toggleSidebar}
             variant="secondary"
-            className=" rounded-full p-2"
+            className="rounded-full p-2"
           >
             <ChevronRight />
           </Button>
