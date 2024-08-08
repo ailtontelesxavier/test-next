@@ -1,0 +1,13 @@
+
+#producao
+#NEXT_PUBLIC_VERCEL_URL=http://app.fomento.to.gov.br
+#NEXTAUTH_BACKEND_URL=http://django:8001/back/api/
+#AUTH_SECRET=o2H0yYZj6!BncIdOvA9Tm7bqsCea1RU#VDl4wh8zXNx^EKS
+#URL_BASE=http://django:8001/back
+
+#LOCAL
+NEXT_PUBLIC_VERCEL_URL=http://10.99.1.124
+NEXTAUTH_BACKEND_URL=http://localhost:8002
+AUTH_SECRET=o2H0yYZj6!BncIdOvA9Tm7bqsCea1RU#VDl4wh8zXNx^EKS
+URL_BASE=http://localhost:8002
+

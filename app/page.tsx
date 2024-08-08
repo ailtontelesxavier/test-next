@@ -1,123 +1,58 @@
-/** @format */
-'use client'
-import PageTitle from "@/components/PageTitle";
+'use client';
+import { useRouter } from "next/navigation";
+import { BackpackIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
-import Card, { CardContent, CardProps } from "@/components/Card";
-import BarChart from "@/components/BarChart";
-import SalesCard, { SalesProps } from "@/components/SalesCard";
-import { useEffect, useState } from "react";
-
-const cardData: CardProps[] = [
-  {
-    label: "Total Revenue",
-    amount: "$45,231.89",
-    discription: "+20.1% from last month",
-    icon: DollarSign
-  },
-  {
-    label: "Subscriptions",
-    amount: "+2350",
-    discription: "+180.1% from last month",
-    icon: Users
-  },
-  {
-    label: "Sales",
-    amount: "+12,234",
-    discription: "+19% from last month",
-    icon: CreditCard
-  },
-  {
-    label: "Active Now",
-    amount: "+573",
-    discription: "+201 since last hour",
-    icon: Activity
-  }
-];
-
-const uesrSalesData: SalesProps[] = [
-  {
-    name: "Olivia Martin",
-    email: "olivia.martin@email.com",
-    saleAmount: "+$1,999.00"
-  },
-  {
-    name: "Jackson Lee",
-    email: "isabella.nguyen@email.com",
-    saleAmount: "+$1,999.00"
-  },
-  {
-    name: "Isabella Nguyen",
-    email: "isabella.nguyen@email.com",
-    saleAmount: "+$39.00"
-  },
-  {
-    name: "William Kim",
-    email: "will@email.com",
-    saleAmount: "+$299.00"
-  },
-  {
-    name: "Sofia Davis",
-    email: "sofia.davis@email.com",
-    saleAmount: "+$39.00"
-  }
-];
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
 
 export default function Home() {
-
-  const [user, setUser] = useState<any>({})
-  const [users, setUsers] = useState<any>([])
-
-  useEffect(() => {
-      obterUsers()
-  }, [])
-
-  async function obterUsers() {
-      const resp = await fetch('http://127.0.0.1:8000/users/?skip=0&limit=100')
-      const users = await resp.json()
-      console.log(users.users)
-      setUsers(users.users)
-  }
-
+  const router = useRouter();
   return (
-    <div className="flex flex-col gap-5  w-full">
-      <PageTitle title="Dashboard" />
-      <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4">
-        {cardData.map((d, i) => (
-          <Card
-            key={i}
-            amount={d.amount}
-            discription={d.discription}
-            icon={d.icon}
-            label={d.label}
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
+        <Link
+          href={"http://www.fomento.to.gov.br"}
+          className="hover:cursor-pointer"
+        >
+          <Image
+            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert "
+            src="/Logo Texto Colorido.png"
+            alt="Next.js Logo"
+            width={280}
+            height={27}
+            priority
           />
-        ))}
-      </section>
-      <section className="grid grid-cols-1  gap-4 transition-all lg:grid-cols-2">
-        <CardContent>
-          <p className="p-4 font-semibold">Overview</p>
+        </Link>
+      </div>
 
-          <BarChart />
-        </CardContent>
-        <CardContent className="flex justify-between gap-4">
-          <section>
-            <p>Recent Sales</p>
-            <p className="text-sm text-gray-400">
-              You made 265 sales this month.
-            </p>
-          </section>
-          {uesrSalesData.map((d, i) => (
-            <SalesCard
-              key={i}
-              email={d.email}
-              name={d.name}
-              saleAmount={d.saleAmount}
-            />
-          ))}
-        </CardContent>
+      <div className="">
+        <div className="mt-2 flex flex-wrap justify-around px-2 ">
+          <Card
+            onClick={() => router.push("/app/juridico")}
+            className="hover:cursor-pointer w-60 items-center p-2 shadow-xl transition-transform hover:scale-105  hover:bg-accent"
+          >
+            <CardHeader className="flex max-w-xs flex-row justify-center space-y-0 pb-2">
+              <CardTitle className="flex flex-col justify-center text-sm font-medium text-orange-500 ">
+                <div className="text-2xl font-bold">Jurídico</div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col items-center justify-center">
+                <BackpackIcon width="24" height="24" />
+                <p className="mt-2 text-xs text-muted-foreground">jurídico</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
-        {/*  */}
-      </section>
-    </div>
+      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left"></div>
+    </main>
   );
 }
