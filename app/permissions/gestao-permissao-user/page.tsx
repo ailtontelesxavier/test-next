@@ -27,32 +27,34 @@ import { AlertDestructive } from "@/components/AlertDestructive";
 import api from "@/lib/api";
 import AlertDialogComp from "@/components/AlertDialog";
 import ComboboxUser from "../_components/ComboboxUser";
+import ComboboxPerfil from "../_components/ComboboxPerfil";
 
 export default function GestaoPermissaoUser() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({rows:{ id: 0, username: "", email: '' }});
-  const [permission, setPermission] = useState({ id: 0 });
+  const [user, setUser] = useState({id: 0, username: "", email: '' });
+  const [perfil, setPerfil] = useState({ id: 0 });
 
   useEffect(() => {
     console.log(user);
     setUser(user);
   }, [user]);
 
-  /* async function addPermission() {
-    console.log(users);
+  async function addPerfil() {
+    console.log(perfil);
+    console.log(user);
     try {
       setLoading(true);
       await api
-        .post("/permissoes/role-permission", {
+        .post("/users/user-role", {
+          user_id: user.id,
           role_id: perfil.id,
-          permission_id: permission.id,
         })
         .then((response: any) => {
           if (response.status === 201) {
             setSuccess("Cadastrado com sucesso");
-            getPerfil();
+            //getPerfil();
           }
         })
         .catch((error) => setError("Error interno: " + error));
@@ -63,7 +65,7 @@ export default function GestaoPermissaoUser() {
     } finally {
       setLoading(false);
     }
-  } */
+  }
 
   /* async function getUsers() {
     try {
@@ -123,19 +125,16 @@ export default function GestaoPermissaoUser() {
             <ComboboxUser setObjet={setUser} objeto={user} />
           </div>
           <div>
-            <Label htmlFor="search">Adicionar Permissão</Label>
+            <Label htmlFor="search">Adicionar Perfil</Label>
             <div className="flex gap-2">
-              {/* <ComboboxPermission
-                setObjet={setPermission}
-                objeto={permission}
-              />
+              <ComboboxPerfil setObjet={setPerfil} objeto={perfil} />
               <Button
-                title="Adicionar Permissão"
-                disabled={perfil.id <= 0 || permission.length <= 0}
-                onClick={() => addPermission()}
+                title="Adicionar Perfil"
+                disabled={user.id <= 0 || perfil.length <= 0}
+                onClick={() => addPerfil()}
               >
                 <FastForward className="h-4 w-4" />
-              </Button> */}
+              </Button>
             </div>
           </div>
         </div>
