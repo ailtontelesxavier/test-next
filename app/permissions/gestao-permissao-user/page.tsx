@@ -28,17 +28,24 @@ import api from "@/lib/api";
 import AlertDialogComp from "@/components/AlertDialog";
 import ComboboxUser from "../_components/ComboboxUser";
 import ComboboxPerfil from "../_components/ComboboxPerfil";
+import { PaginationActionsApi } from "@/components/paginationActionsApi";
 
 export default function GestaoPermissaoUser() {
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState<number>(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({id: 0, username: "", email: '' });
   const [perfil, setPerfil] = useState({ id: 0 });
+  const [perfilList, setPerfilList] = useState<any>();
 
   useEffect(() => {
     console.log(user);
     setUser(user);
+
+    if (user.id > 0) getPerfis();
+
   }, [user]);
 
   async function addPerfil() {
@@ -52,9 +59,9 @@ export default function GestaoPermissaoUser() {
           role_id: perfil.id,
         })
         .then((response: any) => {
-          if (response.status === 201) {
+          if (response.status === 200) {
             setSuccess("Cadastrado com sucesso");
-            //getPerfil();
+            getPerfis();
           }
         })
         .catch((error) => setError("Error interno: " + error));
@@ -67,15 +74,16 @@ export default function GestaoPermissaoUser() {
     }
   }
 
-  /* async function getUsers() {
+  async function getPerfis() {
     try {
       setLoading(true);
-      console.log(users.id)
+      console.log(user.id)
       await api
-        .get(`/permissoes/role/full/` + users.id)
+        .get(`/users/user-role/${user.id}?page=${page}&page_size=10`)
         .then((response) => {
           console.log(response.data);
-          setUsers(response.data);
+          setPerfilList(response.data);
+          setTotal(response.data.total_records)
         }).catch((error) => {
           console.error("error interno", error);
         });
@@ -84,17 +92,17 @@ export default function GestaoPermissaoUser() {
     } finally {
       setLoading(false);
     }
-  } */
-  /* async function deleteRolePermission(permissao: any) {
+  }
+  async function deleteRoleUser(obj: any) {
     try {
       console.log(perfil.id)
-      console.log(permissao.id)
+      console.log(obj.id)
       await api
-        .delete(`/permissoes/role-permission/role_by_permission/?role_id=${perfil.id}&permission_id=${permissao.id}`)
+        .delete(`/users/user-role/?user_role_id=${obj.id}`)
         .then((response: any) => {
           if (response.status === 200) {
             setSuccess("Excluido com sucesso");
-            getPerfil();
+            getPerfis();
           }
         })
         .catch((error) => setError("Error interno: " + error));
@@ -103,11 +111,12 @@ export default function GestaoPermissaoUser() {
         setError(error.response.data.detail + "; " + error.message);
       }
     }
-  } */
+  }
 
   function limpar() {
-    setUser({ id: 0, name: "", permissions: [] });
-    //setPermission({ id: 0 });
+    setUser({ id: 0, name: "", roles: [] });
+    setPerfil({ id: 0 });
+    setPerfilList({rows:[]});
   }
 
   return (
@@ -143,31 +152,38 @@ export default function GestaoPermissaoUser() {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Modulo</TableHead>
-              <TableHead>Permissao</TableHead>
+              <TableHead>Perfil</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {/* {perfil?.permissions.map((permission) => (
-              <TableRow key={permission.id}>
-                <TableCell className="font-medium">{permission.id}</TableCell>
+            {console.log(perfilList)}
+             {perfilList?.rows.map((perfil) => (
+              <TableRow key={perfil.id}>
+                <TableCell className="font-medium">{perfil.id}</TableCell>
                 <TableCell className="font-medium">
-                  {permission.module.title}
+                  {perfil.role.name}
                 </TableCell>
-                <TableCell>{permission.name}</TableCell>
                 <TableCell className="text-right">
                   <AlertDialogComp
                         title="Tem certeza que deseja excluir?"
                         description=""
-                        param={permission}
-                        acao={deleteRolePermission}
+                        param={perfil}
+                        acao={deleteRoleUser}
                       />
                 </TableCell>
               </TableRow>
-            ))} */}
+            ))}
           </TableBody>
         </Table>
+        <section>
+        <PaginationActionsApi
+          itensPerPage={10}
+          count={total}
+          setPageIndex={setPage}
+          pageIndex={page}
+        />
+      </section>
       </CardContent>
       <CardFooter>
         <div className="flex w-full items-end justify-end">
