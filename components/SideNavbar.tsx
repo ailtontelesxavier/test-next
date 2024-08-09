@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Nav } from "./nav";
 
@@ -105,7 +104,7 @@ export default function SideNavbar({}: Props) {
   return (
     <div className="relative min-w-[80px] border-r px-3  pb-10 pt-24 ">
       {!mobileWidth && (
-        <div className="absolute right-[-20px] top-7">
+        <div className="absolute right-[-20px] top-7 ">
           <Button
             onClick={toggleSidebar}
             variant="secondary"

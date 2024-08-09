@@ -96,7 +96,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                       <span className="sr-only">{link.title}</span>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="flex flex-col items-start gap-2">
+                  <TooltipContent side="right" className="flex flex-col  items-start gap-2">
                     {link.submenu.map((sublink, subIndex) => (
                       <Link
                         key={subIndex}
