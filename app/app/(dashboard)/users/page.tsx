@@ -41,7 +41,7 @@ export default function UsersPage({ }: Props) {
       cell: ({ row }) => {
         return (
           <div className="flex gap-2 items-center hover:cursor-pointer hover:text-blue-500"
-            onClick={() => router.push(`/users/form/${row.getValue("id")}`)}
+            onClick={() => router.push(`/app/users/form/${row.getValue("id")}`)}
           >
             <p>{row.getValue("id")} </p>
           </div>
@@ -79,7 +79,7 @@ export default function UsersPage({ }: Props) {
           className="rounded-full space-x-2 mt-2"
           onClick={() => {
             setIsSubmit(true);
-            router.push("/users/form");
+            router.push("/app/users/form");
           }}
         >
           {isSubmit ? (

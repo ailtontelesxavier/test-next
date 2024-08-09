@@ -126,7 +126,7 @@ export default function UserFormPage() {
             </div>
           </div>
           <div className="flex mt-5 gap-4 w-full justify-end">
-            <Button type="button" variant={"secondary"} onClick={()=>router.push('/users/')}>Cancelar</Button>
+            <Button type="button" variant={"secondary"} onClick={()=>router.push('/app/users/')}>Cancelar</Button>
             <Button type="button" variant={"secondary"} onClick={()=>limparForm()}>Limpar</Button>
             <Button type="submit">Cadastrar</Button>
           </div>
