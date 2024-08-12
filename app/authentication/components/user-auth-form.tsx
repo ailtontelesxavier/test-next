@@ -34,6 +34,7 @@ const formSchema = z.object({
   password: z.string({
     required_error: "Senha requerida.",
   }),
+  client_secret: z.string().max(6).min(6)
 });
 
 type LoginFormData = z.infer<typeof formSchema>;
@@ -48,6 +49,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     defaultValues: {
       username: "",
       password: "",
+      client_secret: "",
     },
   });
 
@@ -117,6 +119,29 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                         <Input
                           placeholder="Senha"
                           type="password"
+                          {...field}
+                          className="text-black"
+                        />
+                      </FormControl>
+                      <FormDescription></FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="text-black mb-6">
+                <FormField
+                  control={form.control}
+                  name="client_secret"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-start">
+                        Secret
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="secret"
+                          type="text"
                           {...field}
                           className="text-black"
                         />

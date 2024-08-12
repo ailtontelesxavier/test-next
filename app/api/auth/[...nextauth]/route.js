@@ -37,7 +37,8 @@ const authOptions = {
           value: "FOMENTO",
         },
         username: {label: "Username", type: "text"},
-        password: {label: "Password", type: "password"}
+        password: {label: "Password", type: "password"},
+        client_secret: {label: "OTP", type: "text"}
       },
       // The data returned from this function is passed forward as the
       // `user` variable to the signIn() and jwt() callback
