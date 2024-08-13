@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Nav } from "./nav";
+import { BackpackIcon } from "@radix-ui/react-icons";
 
 type Props = {};
 
@@ -40,6 +41,32 @@ export default function SideNavbar({}: Props) {
       href: "/app/users",
       icon: UsersRound,
       variant: "ghost",
+    },
+    {
+      title:'Juridico',
+      href: '/app/juridico',
+      icon: BackpackIcon,
+      variant: 'ghost',
+      submenu: [
+        {
+          title:"Dashboard",
+          href:"/app/permissions/gestao-permissao",
+          icon: LayoutDashboard,
+          variante: "ghost"
+        },
+        {
+          title:"Negociação de Credito",
+          href:"/app/permissions/gestao-permissao-user",
+          icon: File,
+          variante: "ghost"
+        },
+        {
+          title:"Relatórios",
+          href:"/app/permissions/gestao-permissao-user",
+          icon: File,
+          variante: "ghost"
+        },
+      ]
     },
     {
       title: "Permission",
