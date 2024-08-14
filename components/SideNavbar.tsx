@@ -56,7 +56,7 @@ export default function SideNavbar({}: Props) {
         },
         {
           title:"Negociação de Credito",
-          href:"/app/permissions/gestao-permissao-user",
+          href:"/app/juridico/negociacao",
           icon: File,
           variante: "ghost"
         },
