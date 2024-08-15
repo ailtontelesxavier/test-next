@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
+import api from "@/lib/api";
 
 // These two values should be a bit less than actual token lifetimes
 const BACKEND_ACCESS_TOKEN_LIFETIME = 45 * 60;            // 45 minutes
@@ -53,7 +54,7 @@ const authOptions = {
           const data = response.data;
           if (data){
             // Forcing generation of a new token on every login
-            data.forceNewToken = true;
+            //data.forceNewToken = true;
             return data;
           }
         } catch (error) {
@@ -85,10 +86,11 @@ const authOptions = {
       // If `user` and `account` are set that means it is a login event
       if (user && account) {
         let backendResponse = account.provider === "credentials" ? user : account.meta;
-        token["user"] = backendResponse.user;
-        token["access_token"] = backendResponse.access;
-        token["refresh_token"] = backendResponse.refresh;
-        token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
+        //console.log(backendResponse)
+        //token["user"] = backendResponse.user;
+        token["access_token"] = backendResponse.access_token;
+        token["refresh_token"] = backendResponse.access_token; //backendResponse.refresh;
+        //token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
         //adiciona no axios authorization
         //axios.defaults.headers.common['Authorization'] = "Bearer " + token["access_token"]
         return token;
@@ -103,8 +105,8 @@ const authOptions = {
               refresh: token["refresh_token"],
             },
           });
-          token["access_token"] = response.data.access;
-          token["refresh_token"] = response.data.refresh;
+          token["access_token"] = response.data.access_token;
+          token["refresh_token"] = response.data.access_token; //response.data.refresh;
           token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
         } catch (error) {
           return null;

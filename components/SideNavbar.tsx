@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Nav } from "./nav";
 import { BackpackIcon } from "@radix-ui/react-icons";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 type Props = {};
 
@@ -22,6 +23,7 @@ import { Button } from "./ui/button";
 import { useWindowWidth } from "@react-hook/window-size";
 
 export default function SideNavbar({}: Props) {
+  const { data: session } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isPermissionSubmenuOpen, setIsPermissionSubmenuOpen] = useState(false);
 
@@ -152,6 +154,9 @@ export default function SideNavbar({}: Props) {
           })),
         }))}
       />
+      <div className="flex w-full items-center justify-center">
+        {session ? <Button variant={"ghost"} onClick={() => signOut()}>Sair</Button> : <Button variant={"ghost"} onClick={() => signIn()}>Entrar</Button>}
+      </div>
     </div>
   );
 }

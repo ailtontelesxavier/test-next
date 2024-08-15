@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import SideNavbar from "@/components/SideNavbar";
 
 const inter = Inter({ subsets: ["latin"], display: 'swap', adjustFontFallback: false });
 
@@ -27,11 +26,8 @@ export default function RootLayout({children}: {children: React.ReactNode;}) {
       >
         {/* sidebar */}
         {/* <p className="border">Sidebar</p> */}
-        <SideNavbar />
         {/* main page */}
-        <div className="p-8 w-full">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );

@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchIcon } from "lucide-react";
 import FormNegociacao from "./_components/formNegociacao";
+import { useSession } from "next-auth/react";
 
 export default function NegociacaoView() {
     const [total, setTotal] = useState(0);
@@ -34,6 +35,8 @@ export default function NegociacaoView() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isBusca, setIsBusca] = useState(true);
 
+    const { data: token, status } = useSession();
+
     useEffect(() => {
         if(isBusca) getNegociacoes();
         setIsBusca(false);
@@ -41,6 +44,8 @@ export default function NegociacaoView() {
         async function getNegociacoes() {
             try {
                 setLoading(true);
+                console.log(token)
+                api.defaults.headers['Authorization'] = `Bearer ${token?.access_token}`;
                 await api
                     .get(`/juridico/negociacao?searchTerm=${searchTerm}&page=${page}&page_size=10`)
                     .then((response) => {
