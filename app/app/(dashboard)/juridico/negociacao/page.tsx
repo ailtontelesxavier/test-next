@@ -24,6 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchIcon } from "lucide-react";
+import FormNegociacao from "./_components/formNegociacao";
 
 export default function NegociacaoView() {
     const [total, setTotal] = useState(0);
@@ -101,16 +102,21 @@ export default function NegociacaoView() {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={handleInputChange}
-                    className="w-full rounded-md border border-input bg-background px-4 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                />
-                <Button onClick={() => filtrar()} variant={"outline"} title="busca">
-                    <SearchIcon className="h-4 w-4"/>
-                </Button>
+                <div className="flex justify-between">
+                    <div className="flex gap-2">
+                        <Input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchTerm}
+                            onChange={handleInputChange}
+                            className="w-full rounded-md border border-input bg-background px-4 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                        />
+                        <Button onClick={() => filtrar()} variant={"outline"} title="busca">
+                            <SearchIcon className="h-4 w-4"/>
+                        </Button>
+                    </div>
+                    <FormNegociacao setIsBusca={setIsBusca} id={0}/>
+                </div>
                 <Separator className="my-6" />
                 <Table>
                     <TableHeader>
@@ -135,7 +141,8 @@ export default function NegociacaoView() {
                                 <TableCell className="font-medium">
                                     {negociacao.contrato}
                                 </TableCell>
-                                <TableCell className="text-right">
+                                <TableCell className="text-right flex gap-1">
+                                    <FormNegociacao setIsBusca={setIsBusca} id={negociacao.id}/>
                                     <AlertDialogComp
                                         title="Tem certeza que deseja excluir?"
                                         description=""
