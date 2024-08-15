@@ -28,41 +28,39 @@ import { SearchIcon } from "lucide-react";
 export default function NegociacaoView() {
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState<number>(1);
-    const [pageAtual, setPageAtual] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [negociacaoList, setNegociacaoList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [isBusca, setIsBusca] = useState(true);
 
     useEffect(() => {
-        if(isBusca && pageAtual != page) getNegociacoes();
+        if(isBusca) getNegociacoes();
         setIsBusca(false);
-        setPageAtual(page)
-
+        
+        async function getNegociacoes() {
+            try {
+                setLoading(true);
+                await api
+                    .get(`/juridico/negociacao?searchTerm=${searchTerm}&page=${page}&page_size=10`)
+                    .then((response) => {
+                        console.log(response.data.rows);
+                        setNegociacaoList(response.data.rows);
+                        setTotal(response.data.total_records)
+                    }).catch((error) => {
+                        console.error("error interno", error);
+                    });
+            } catch (error) {
+                console.error("Error:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
     }, [page, isBusca, searchTerm])
 
     function handleInputChange(e: any) {
         setSearchTerm(e.target.value);   
     }
 
-    async function getNegociacoes() {
-        try {
-            setLoading(true);
-            await api
-                .get(`/juridico/negociacao?searchTerm=${searchTerm}&page=${page}&page_size=10`)
-                .then((response) => {
-                    console.log(response.data.rows);
-                    setNegociacaoList(response.data.rows);
-                    setTotal(response.data.total_records)
-                }).catch((error) => {
-                    console.error("error interno", error);
-                });
-        } catch (error) {
-            console.error("Error:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
 
     async function deleteNegociacao(obj: any) {
         /* try {
@@ -87,7 +85,10 @@ export default function NegociacaoView() {
     function filtrar() {
         setIsBusca(true);
         setPage(1);
-        setPageAtual(0);
+    }
+    function setPagina(valor: number) {
+        setPage(valor);
+        setIsBusca(true);
     }
     return (
         <Card className="w-full max-w-4xl">
@@ -150,7 +151,7 @@ export default function NegociacaoView() {
                     <PaginationActionsApi
                         itensPerPage={10}
                         count={total}
-                        setPageIndex={setPage}
+                        setPageIndex={setPagina}
                         pageIndex={page}
                     />
                 </section>
