@@ -95,19 +95,6 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="contrato">Executado</Label>
-            <Input
-              id="executado"
-              placeholder="Informe o executado"
-              value={negociacao.executado ?? ""}
-              onChange={(e) =>
-                setNegociacao({ ...negociacao, executado: e.target.value })
-              }
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
             <Label htmlFor="contrato">Contrato</Label>
             <Input
               id="contrato"
@@ -118,51 +105,69 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
               }
             />
           </div>
-          <div className="space-y-2">
+        </div>
+        <div className="space-y-2">
+            <Label htmlFor="contrato">Executado</Label>
+            <Input
+              id="executado"
+              placeholder="Informe o executado"
+              value={negociacao.executado ?? ""}
+              onChange={(e) =>
+                setNegociacao({ ...negociacao, executado: e.target.value })
+              }
+            />
+          </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox id="liquidado" />
+          <label
+            htmlFor="liquidado"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Liquidado
+          </label>
+          <Checkbox id="descumprido" 
+            checked={negociacao.is_liquidado}
+            onCheckedChange={(value: boolean) => {
+             setNegociacao({ ...negociacao, is_liquidado: value })
+            }}
+          />
+          <label
+            htmlFor="descumprido"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Descumprido
+          </label>
+          <Checkbox id="retorno" />
+          <label
+            htmlFor="retorno"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Retorno a Execucao
+          </label>
+        </div>
+        <div className="space-y-2">
             <div className="flex">
               <div className="space-y-2">
                 <Label htmlFor="tipo-acordo">Tipo de Acordo</Label>
-                <Select id="tipo-acordo">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo de acordo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="homologacao">Homologação</SelectItem>
-                    <SelectItem value="termo-acordo">
-                      Termo de Acordo
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2 gap-4">
-                <Label htmlFor="liquidado">Liquidado</Label>
-                <Checkbox
-                 className="ml-2"
-                 id="liquidado"
-                 checked={negociacao.is_liquidado}
-                 onCheckedChange={(value: boolean) => {
-                  setNegociacao({ ...negociacao, is_liquidado: value })
-                 }} 
-                />
+                <div className="flex items-center space-x-2">
+                <Checkbox id="homologacao" />
+                <label
+                  htmlFor="homologacao"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Homologação de Acordo Extra Judicial
+                </label>
+                <Checkbox id="termo" />
+                <label
+                  htmlFor="termo"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Termo de Acordo Extra Judicial
+                </label>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="status">Status</Label>
-          <Select id="status">
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione o status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="liquido">Líquido</SelectItem>
-              <SelectItem value="descumprido">Descumprido</SelectItem>
-              <SelectItem value="retorno-execucao">
-                Retorno à Execução
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
         <div className="space-y-2">
           <Label htmlFor="observacao">Observação</Label>
           <Textarea
