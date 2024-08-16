@@ -5,7 +5,7 @@ import api from "@/lib/api";
 
 // These two values should be a bit less than actual token lifetimes
 const BACKEND_ACCESS_TOKEN_LIFETIME = 45 * 60;            // 45 minutes
-const BACKEND_REFRESH_TOKEN_LIFETIME = 6 * 24 * 60 * 60;  // 6 days
+const BACKEND_REFRESH_TOKEN_LIFETIME = 1 * 24 * 60 * 60;  // 1 days
 
 const getCurrentEpochTime = () => {
   return Math.floor(new Date().getTime() / 1000);
@@ -91,21 +91,32 @@ const authOptions = {
         token["access_token"] = backendResponse.access_token;
         token["refresh_token"] = backendResponse.access_token; //backendResponse.refresh;
         token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
+        //console.log(token)
         return token;
       }
       // Refresh the backend token if necessary
+      //console.log('aqui')
+      //console.log(token)
+      //console.log(!token.forceNewToken)
+      //console.log(getCurrentEpochTime() > token["ref"])
+      //console.log(getCurrentEpochTime())
+      //console.log(token.ref)
       if (!token.forceNewToken && getCurrentEpochTime() > token["ref"]) {
         try {
-          const response = await axios({
+          /* const response = await axios({
             method: "post",
             url: process.env.NEXTAUTH_BACKEND_URL + "/auth/refresh_token",
             data: {
               refresh: token["refresh_token"],
             },
-          });
-          token["access_token"] = response.data.access_token;
-          token["refresh_token"] = response.data.access_token; //response.data.refresh;
-          token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
+          }); */
+          await api.post("/auth/refresh_token").then((response) => {
+            //console.log(response.data);
+            token["access_token"] = response.data.access_token;
+            token["refresh_token"] = response.data.access_token; //response.data.refresh;
+            token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
+          })
+          
         } catch (error) {
           return null;
         }
