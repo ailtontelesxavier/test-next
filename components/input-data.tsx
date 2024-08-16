@@ -31,13 +31,16 @@ export default function InputDate({
   //console.log(model)
   //console.log(model[name])
   const [field, setField] = useState(model && model[name] || '');
+  const [objeto, setObjeto] = useState(model)
  useEffect(()=>{
     console.log(model);
     if(model && model[name]) {
       console.log(field)
-      if(field){
-        setValue({ ...model, name: field })
-      }
+      /* if(field){
+        console.log(field);
+        setObjeto({ ...model});
+        setValue({...objeto});
+      } */
       //setField(model[name])
     }
     //setValue(...model)
@@ -56,12 +59,12 @@ export default function InputDate({
           onChange={(val) => {
             if (val.target.value?.length <= 10) {
               setField('');
-              setValue({ ...model, name: undefined })
+              //setValue({ ...model, name: undefined })
               return;
             }
             if (val.target.value?.length === 0) {
               setField('');
-              setValue({ ...model, name: undefined })
+              //setValue({ ...model, name: undefined })
               return;
             }
             setValue({ ...model, name: val });
@@ -77,7 +80,7 @@ export default function InputDate({
           <Calendar
             onChange={(val) => {
               setField(''+val);
-              setValue({ ...model, name: val })
+              //setValue({ ...model, name: val })
             }}
             onClickDay={onClickDay}
             value={field}
@@ -89,7 +92,7 @@ export default function InputDate({
             onChange={(val) => {
               console.log('aqui')
               setField(''+val);
-              setValue({ ...model, name: val })
+              //setValue({ ...model, name: val })
             }}
             value={field}
             locale="pt-BR"

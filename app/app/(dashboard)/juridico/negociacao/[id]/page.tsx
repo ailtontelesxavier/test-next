@@ -38,6 +38,8 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [negociacao, setNegociacao] = useState<any>({});
   const [isBusca, setIsBusca] = useState(true);
 
+  console.log(negociacao?.data_ult_parc_entr)
+
   useEffect(() => {
     if (params.id > 0) {
       console.log(params.id);
@@ -328,17 +330,16 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     setValue={setNegociacao}
                     onClickDay={handleChangeDataIniciaEntrada}
                   />
-                  <span>{negociacao?.data_pri_parc_entr}</span>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="data_ult_parc_entr">Data final Entrada</Label>
+                  <Label>Data final Entrada</Label>
                   <InputDate
-                    id='data_ult_parc_entr'
                     name={'data_ult_parc_entr'}
                     model={negociacao}
                     setValue={setNegociacao}
-                    onClickDay={undefined}
-                  />
+                    onClickDay={handleChangeDataFinalEntrada}
+                    />
+                    <span>{negociacao?.data_ult_parc_entr} 22</span>
                 </div>
               </div>
             </AccordionContent>
@@ -377,6 +378,14 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
 
     return valor_parcela.toFixed(2);
   }
+
+  function handleChangeDataFinalEntrada(value: any) {
+    setNegociacao({
+      ...negociacao,
+      data_ult_parc_entr: value,
+    });
+  }
+
   function handleChangeDataIniciaEntrada(value: any) {
     console.log(value)
     // Atualiza a data inicial da parcela de entrada
