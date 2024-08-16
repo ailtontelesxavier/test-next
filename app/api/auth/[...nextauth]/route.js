@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 import api from "@/lib/api";
-import { decodeJwt, jwtVerify } from 'jose';
+import { decodeJwt } from 'jose';
 
 // These two values should be a bit less than actual token lifetimes
 const BACKEND_ACCESS_TOKEN_LIFETIME = 45 * 60;            // 45 minutes
@@ -22,7 +22,7 @@ const SIGN_IN_HANDLERS = {
 const SIGN_IN_PROVIDERS = Object.keys(SIGN_IN_HANDLERS);
 
 const authOptions = {
-  secret: process.env.AUTH_SECRET,
+  // No static secret used
   session: {
     strategy: "jwt",
     maxAge: BACKEND_REFRESH_TOKEN_LIFETIME
@@ -34,16 +34,14 @@ const authOptions = {
       credentials: {
         domain: {
           label: "Domain",
-          type: "text ",
+          type: "text",
           placeholder: "FOMENTO",
           value: "FOMENTO",
         },
-        username: {label: "Username", type: "text"},
-        password: {label: "Password", type: "password"},
-        client_secret: {label: "OTP", type: "text"}
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
+        client_secret: { label: "OTP", type: "text" }
       },
-      // The data returned from this function is passed forward as the
-      // `user` variable to the signIn() and jwt() callback
       async authorize(credentials, req) {
         try {
           const response = await axios({
@@ -53,8 +51,7 @@ const authOptions = {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
           });
           const data = response.data;
-          if (data){
-            // Forcing generation of a new token on every login
+          if (data) {
             data.forceNewToken = true;
             return data;
           }
@@ -66,90 +63,50 @@ const authOptions = {
     })
   ],
   callbacks: {
-    async signIn ({user, account, profile, email, credentials}) {
+    async signIn({ user, account, profile, email, credentials }) {
       if (!SIGN_IN_PROVIDERS.includes(account.provider)) return false;
-      return SIGN_IN_HANDLERS[account.provider](
-        user, account, profile, email, credentials
-      );
+      return SIGN_IN_HANDLERS[account.provider](user, account, profile, email, credentials);
     },
-    /* async redirect(url) {
-      if (process.env.NODE_ENV === 'production') {
-        if (url.url.startsWith("http://localhost:3000")) {
-          return url.url.replace(
-            "http://localhost:3000",
-            "http://app.fomento.to.gov.br" //"http://app.fomento.to.gov.br:3000"
-          );
-        }
-      }
-      return url.url || '/';
-    }, */
-    async jwt({user, token, account}) {
-      // If `user` and `account` are set that means it is a login event
+    async jwt({ user, token, account }) {
       if (user && account) {
-        console.log('aqui')
         let backendResponse = account.provider === "credentials" ? user : account.meta;
-        //console.log(backendResponse)
-        //token["user"] = backendResponse.user;
-        token["access_token"] = backendResponse.access_token;
-        token["refresh_token"] = backendResponse.access_token; //backendResponse.refresh;
-        console.log('decoded')
-        const decoded = decodeJwt(backendResponse.access_token);
-        //const decoded = jwtVerify(backendResponse.access_token, process.env.AUTH_SECRET);
-        //console.log(decoded)
 
+        token["access_token"] = backendResponse.access_token;
+        token["refresh_token"] = backendResponse.refresh_token;
+
+        const decoded = decodeJwt(backendResponse.access_token);
         token['exp'] = decoded.exp;
         token['sub'] = decoded.sub;
-        //console.log(token)
         return token;
       }
-      // Refresh the backend token if necessary
-      //console.log('aqui')
-      console.log(token)
-      console.log(!token.forceNewToken)
-      console.log(getCurrentEpochTime() > token["exp"])
-      console.log(getCurrentEpochTime())
-      console.log(token.ref)
-      if (!token.forceNewToken && getCurrentEpochTime() > token["exp"]) {
-        try {
-          /* const response = await axios({
-            method: "post",
-            url: process.env.NEXTAUTH_BACKEND_URL + "/auth/refresh_token",
-            data: {
-              refresh: token["refresh_token"],
-            },
-          }); */
-          await api.post("/auth/refresh_token").then((response) => {
-            //console.log(response.data);
-            token["access_token"] = response.data.access_token;
-            token["refresh_token"] = response.data.access_token; //response.data.refresh;
-            const decoded = decodeJwt(backendResponse.access_token);
-            //const decoded = jwtVerify(backendResponse.access_token, process.env.AUTH_SECRET);
 
-            token['exp'] = decoded.exp;
-            token['sub'] = decoded.sub;
-          })
-          
+      if (!token.forceNewToken && getCurrentEpochTime() > token['exp']) {
+        try {
+          const response = await api.post("/auth/refresh_token", {
+            refresh_token: token["refresh_token"]
+          });
+          token["access_token"] = response.data.access_token;
+          token["refresh_token"] = response.data.refresh_token;
+
+          const decoded = decodeJwt(response.data.access_token);
+          token['exp'] = decoded.exp;
+          token['sub'] = decoded.sub;
         } catch (error) {
           return null;
         }
       }
-      // Resetting forceNewToken flag
+      
       delete token.forceNewToken;
       return token;
     },
-    // Since we're using Django as the backend we have to pass the JWT
-    // token to the client instead of the `session`.
-    async session({token}) {
+    async session({ token }) {
       return token;
     }
   },
   pages: {
-    signIn: "/authentication",//"/signin",
-    //callbackUrl: '/authentication'
+    signIn: "/authentication",
   }
-  
 };
 
-const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST }
-
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
