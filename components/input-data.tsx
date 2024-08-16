@@ -30,11 +30,18 @@ export default function InputDate({
 }) {
   //console.log(model)
   //console.log(model[name])
-  const [field, setField] = useState(model[name] || '');
-  useEffect(()=>{
-    console.log(model[name]);
-    setField(model[name]);
-  }, [model, name])
+  const [field, setField] = useState(model && model[name] || '');
+ useEffect(()=>{
+    console.log(model);
+    if(model && model[name]) {
+      console.log(field)
+      if(field){
+        setValue({ ...model, name: field })
+      }
+      //setField(model[name])
+    }
+    //setValue(...model)
+  }, [field])
   return (
     <Popover>
       <div className="flex gap-2">

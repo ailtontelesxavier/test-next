@@ -37,8 +37,6 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [success, setSuccess] = useState("");
   const [negociacao, setNegociacao] = useState<any>({});
   const [isBusca, setIsBusca] = useState(true);
-  console.log(negociacao)
-  const dataRef = useRef(negociacao.data_pri_parc_entr);
 
   useEffect(() => {
     if (params.id > 0) {
@@ -85,7 +83,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
             <Input
               id="processo"
               placeholder="Informe o número do processo"
-              value={negociacao.processo ?? ""}
+              value={negociacao?.processo ?? ""}
               onChange={(e) =>
                 setNegociacao({ ...negociacao, processo: e.target.value })
               }
@@ -96,7 +94,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
             <Input
               id="contrato"
               placeholder="Informe o contrato"
-              value={negociacao.contrato ?? ""}
+              value={negociacao?.contrato ?? ""}
               onChange={(e) =>
                 setNegociacao({ ...negociacao, contrato: e.target.value })
               }
@@ -108,7 +106,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
           <Input
             id="executado"
             placeholder="Informe o executado"
-            value={negociacao.executado ?? ""}
+            value={negociacao?.executado ?? ""}
             onChange={(e) =>
               setNegociacao({ ...negociacao, executado: e.target.value })
             }
@@ -117,7 +115,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
         <div className="flex items-center space-x-2">
           <Checkbox
             id="is_liquidado"
-            checked={negociacao.is_liquidado}
+            checked={negociacao?.is_liquidado}
             onCheckedChange={(value: boolean) => {
               setNegociacao({ ...negociacao, is_liquidado: value });
             }}
@@ -130,7 +128,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
           </label>
           <Checkbox
             id="is_descumprido"
-            checked={negociacao.is_descumprido}
+            checked={negociacao?.is_descumprido}
             onCheckedChange={(value: boolean) => {
               setNegociacao({ ...negociacao, is_descumprido: value });
             }}
@@ -143,7 +141,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
           </label>
           <Checkbox
             id="is_retorno_execucao"
-            checked={negociacao.is_retorno_execucao}
+            checked={negociacao?.is_retorno_execucao}
             onCheckedChange={(value: boolean) => {
               setNegociacao({ ...negociacao, is_retorno_execucao: value });
             }}
@@ -162,7 +160,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="is_hom_ext_jud"
-                  checked={negociacao.is_hom_ext_jud}
+                  checked={negociacao?.is_hom_ext_jud}
                   onCheckedChange={(value: boolean) => {
                     setNegociacao({ ...negociacao, is_hom_ext_jud: value });
                   }}
@@ -175,7 +173,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                 </label>
                 <Checkbox
                   id="is_term_ex_jud"
-                  checked={negociacao.is_term_ex_jud}
+                  checked={negociacao?.is_term_ex_jud}
                   onCheckedChange={(value: boolean) => {
                     setNegociacao({ ...negociacao, is_term_ex_jud: value });
                   }}
@@ -195,7 +193,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
           <Textarea
             id="observacao"
             placeholder="Informe a observação"
-            value={negociacao.obs_val_neg ?? ""}
+            value={negociacao?.obs_val_neg ?? ""}
             onChange={(e) =>
               setNegociacao({ ...negociacao, obs_val_neg: e.target.value })
             }
@@ -216,7 +214,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     size={10}
                     step="0.01"
                     min="0"
-                    value={negociacao.val_devido ?? ""}
+                    value={negociacao?.val_devido ?? ""}
                     onChange={(e) =>
                       setNegociacao({ ...negociacao, val_devido: e.target.value })
                     }
@@ -232,7 +230,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     step="0.01"
                     min="0"
                     required={false}
-                    value={negociacao.val_desconto ?? ""}
+                    value={negociacao?.val_desconto ?? ""}
                     onChange={(e) =>
                       setNegociacao({ ...negociacao, val_desconto: e.target.value })
                     }
@@ -247,7 +245,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     size={10}
                     step="0.01"
                     min="0"
-                    value={negociacao.val_neg ?? ""}
+                    value={negociacao?.val_neg ?? ""}
                     onChange={(e) =>
                       setNegociacao({ ...negociacao, val_neg: e.target.value })
                     }
@@ -262,7 +260,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     size={10}
                     step="1"
                     min="0"
-                    value={negociacao.qtd ?? ""}
+                    value={negociacao?.qtd ?? ""}
                     onChange={(e) =>
                       setNegociacao({ ...negociacao, qtd: e.target.value })
                     }
@@ -279,7 +277,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     size={10}
                     step="0.01"
                     min="0"
-                    value={negociacao.taxa_mes ?? 0}
+                    value={negociacao?.taxa_mes ?? 0}
                     onChange={(val) => {
                       var valor = calculatePGTO(
                         parseFloat(negociacao.val_neg),
@@ -303,7 +301,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     step="0.01"
                     min="0"
                     required={false}
-                    value={negociacao.val_entrada ?? 0}
+                    value={negociacao?.val_entrada ?? 0}
                     onChange={(val) => {setNegociacao({ ...negociacao, val_entrada: parseInt(val.target.value) })}}
                   />
                 </div>
@@ -317,22 +315,25 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     step="1"
                     min="0"
                     required={false}
-                    value={negociacao.qtd_parc_ent ?? 0}
+                    value={negociacao?.qtd_parc_ent ?? 0}
                     onChange={(val) => {setNegociacao({ ...negociacao, qtd_parc_ent: parseInt(val.target.value) })}}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_pri_parc_entr">Data inical Parc. Entrada</Label>
                   <InputDate
+                    id='data_pri_parc_entr'
                     name={'data_pri_parc_entr'}
                     model={negociacao}
                     setValue={setNegociacao}
                     onClickDay={handleChangeDataIniciaEntrada}
                   />
+                  <span>{negociacao?.data_pri_parc_entr}</span>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_ult_parc_entr">Data final Entrada</Label>
                   <InputDate
+                    id='data_ult_parc_entr'
                     name={'data_ult_parc_entr'}
                     model={negociacao}
                     setValue={setNegociacao}
@@ -376,15 +377,12 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
 
     return valor_parcela.toFixed(2);
   }
-  function handleChangeDataIniciaEntrada(value: Date, event: MouseEvent) {
+  function handleChangeDataIniciaEntrada(value: any) {
     console.log(value)
     // Atualiza a data inicial da parcela de entrada
-    setNegociacao((prev:any) => ({
-      ...prev,
-      data_pri_parc_entr: value,
-    }));
+    setNegociacao({ ...negociacao, data_pri_parc_entr: value });
 
-    if (negociacao.qtd_parc_ent) {
+    if (negociacao?.qtd_parc_ent) {
       console.log('arq')
       const dataComMesesAdicionados = addMonths(
         value,
@@ -396,10 +394,10 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
       const dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
 
       // Atualiza a data final da parcela de entrada
-      setNegociacao((prev:any) => ({
-        ...prev,
+      setNegociacao({
+        ...negociacao,
         data_ult_parc_entr: dataFinal,
-      }));
+      });
     } else {
       toast("Verifique a Qtd de Parcelas. ", {
         action: {

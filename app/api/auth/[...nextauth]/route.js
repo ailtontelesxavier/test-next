@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 import api from "@/lib/api";
+import { decodeJwt, jwtVerify } from 'jose';
 
 // These two values should be a bit less than actual token lifetimes
 const BACKEND_ACCESS_TOKEN_LIFETIME = 45 * 60;            // 45 minutes
@@ -85,23 +86,30 @@ const authOptions = {
     async jwt({user, token, account}) {
       // If `user` and `account` are set that means it is a login event
       if (user && account) {
+        console.log('aqui')
         let backendResponse = account.provider === "credentials" ? user : account.meta;
         //console.log(backendResponse)
         //token["user"] = backendResponse.user;
         token["access_token"] = backendResponse.access_token;
         token["refresh_token"] = backendResponse.access_token; //backendResponse.refresh;
-        token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
+        console.log('decoded')
+        const decoded = decodeJwt(backendResponse.access_token);
+        //const decoded = jwtVerify(backendResponse.access_token, process.env.AUTH_SECRET);
+        //console.log(decoded)
+
+        token['exp'] = decoded.exp;
+        token['sub'] = decoded.sub;
         //console.log(token)
         return token;
       }
       // Refresh the backend token if necessary
       //console.log('aqui')
-      //console.log(token)
-      //console.log(!token.forceNewToken)
-      //console.log(getCurrentEpochTime() > token["ref"])
-      //console.log(getCurrentEpochTime())
-      //console.log(token.ref)
-      if (!token.forceNewToken && getCurrentEpochTime() > token["ref"]) {
+      console.log(token)
+      console.log(!token.forceNewToken)
+      console.log(getCurrentEpochTime() > token["exp"])
+      console.log(getCurrentEpochTime())
+      console.log(token.ref)
+      if (!token.forceNewToken && getCurrentEpochTime() > token["exp"]) {
         try {
           /* const response = await axios({
             method: "post",
@@ -114,7 +122,11 @@ const authOptions = {
             //console.log(response.data);
             token["access_token"] = response.data.access_token;
             token["refresh_token"] = response.data.access_token; //response.data.refresh;
-            token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
+            const decoded = decodeJwt(backendResponse.access_token);
+            //const decoded = jwtVerify(backendResponse.access_token, process.env.AUTH_SECRET);
+
+            token['exp'] = decoded.exp;
+            token['sub'] = decoded.sub;
           })
           
         } catch (error) {

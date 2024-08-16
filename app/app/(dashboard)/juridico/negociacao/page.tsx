@@ -52,8 +52,6 @@ export default function NegociacaoView() {
     async function getNegociacoes() {
       try {
         setLoading(true);
-        console.log(token);
-        api.defaults.headers["Authorization"] = `Bearer ${token?.access_token}`;
         await api
           .get(
             `/juridico/negociacao?searchTerm=${searchTerm}&page=${page}&page_size=10`
