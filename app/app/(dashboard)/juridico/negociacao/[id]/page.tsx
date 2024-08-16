@@ -323,7 +323,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_pri_parc_entr">Data inical Parc. Entrada</Label>
-                  <InputDate ref={dataRef}
+                  <InputDate
                     name={'data_pri_parc_entr'}
                     model={negociacao}
                     setValue={setNegociacao}
@@ -332,7 +332,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_ult_parc_entr">Data final Entrada</Label>
-                  <InputDate ref={dataRef}
+                  <InputDate
                     name={'data_ult_parc_entr'}
                     model={negociacao}
                     setValue={setNegociacao}
@@ -378,7 +378,11 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   }
   function handleChangeDataIniciaEntrada(value: Date, event: MouseEvent) {
     console.log(value)
-    setNegociacao({ ...negociacao, data_pri_parc_entr: value });
+    // Atualiza a data inicial da parcela de entrada
+    setNegociacao((prev:any) => ({
+      ...prev,
+      data_pri_parc_entr: value,
+    }));
 
     if (negociacao.qtd_parc_ent) {
       console.log('arq')
@@ -387,7 +391,15 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
         negociacao.qtd_parc_ent
       );
       console.log(obterProximoDiaUtil(dataComMesesAdicionados))
-      setNegociacao({ ...negociacao, data_ult_parc_entr: obterProximoDiaUtil(dataComMesesAdicionados) });
+      //const dataComMesesAdicionados = addMonths(value, negociacao.qtd_parc_ent - 1);
+      //setNegociacao({ ...negociacao, data_ult_parc_entr: obterProximoDiaUtil(dataComMesesAdicionados) });
+      const dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
+
+      // Atualiza a data final da parcela de entrada
+      setNegociacao((prev:any) => ({
+        ...prev,
+        data_ult_parc_entr: dataFinal,
+      }));
     } else {
       toast("Verifique a Qtd de Parcelas. ", {
         action: {

@@ -8,7 +8,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import Calendar, { OnClickFunc } from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { UseFormSetValue } from "react-hook-form";
 /**
@@ -31,6 +31,10 @@ export default function InputDate({
   //console.log(model)
   //console.log(model[name])
   const [field, setField] = useState(model[name] || '');
+  useEffect(()=>{
+    console.log(model[name]);
+    setField(model[name]);
+  }, [model, name])
   return (
     <Popover>
       <div className="flex gap-2">
