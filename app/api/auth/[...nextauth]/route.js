@@ -54,7 +54,7 @@ const authOptions = {
           const data = response.data;
           if (data){
             // Forcing generation of a new token on every login
-            //data.forceNewToken = true;
+            data.forceNewToken = true;
             return data;
           }
         } catch (error) {
@@ -90,9 +90,7 @@ const authOptions = {
         //token["user"] = backendResponse.user;
         token["access_token"] = backendResponse.access_token;
         token["refresh_token"] = backendResponse.access_token; //backendResponse.refresh;
-        //token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
-        //adiciona no axios authorization
-        //axios.defaults.headers.common['Authorization'] = "Bearer " + token["access_token"]
+        token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
         return token;
       }
       // Refresh the backend token if necessary
