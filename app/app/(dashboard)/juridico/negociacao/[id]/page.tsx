@@ -37,13 +37,12 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [success, setSuccess] = useState("");
   const [negociacao, setNegociacao] = useState<any>({});
   
-  const [data_pri_parc_entr, setData_pri_parc_entr] = useState<any>(null)
-  const [data_ult_parc_entr, setData_ult_parc_entr] = useState<any>(null)
+  const [data_pri_parc_entr, setData_pri_parc_entr] = useState(negociacao?.data_pri_parc_entr);
+  const [data_ult_parc_entr, setData_ult_parc_entr] = useState(negociacao?.data_ult_parc_entr);
   const [isBusca, setIsBusca] = useState(true);
-  const [isAterData, setIsAterData] = useState(false);
 
-  console.log(negociacao?.data_pri_parc_entr)
-  console.log(negociacao?.data_ult_parc_entr)
+  //console.log(negociacao?.data_pri_parc_entr)
+  //console.log(negociacao?.data_ult_parc_entr)
 
   useEffect(() => {
     if (params.id > 0 && isBusca) {
@@ -51,13 +50,11 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
       getNegociacao();
     }
 
-    if(isAterData) {
-      setData_pri_parc_entr(negociacao?.data_pri_parc_entr)
-      setData_ult_parc_entr(negociacao?.data_ult_parc_entr)
+    if (negociacao?.data_pri_parc_entr) {
+      setData_ult_parc_entr(negociacao?.data_ult_parc_entr);
     }
 
     setIsBusca(false)
-    setIsAterData(false)
     
     async function getNegociacao() {
       await api.get(`/juridico/negociacao/${params.id}`).then((response) => {
@@ -67,7 +64,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
         setData_ult_parc_entr(negociacao?.data_ult_parc_entr)
       });
     }
-  }, [params.id, isBusca, isAterData, negociacao?.data_pri_parc_entr, negociacao?.data_ult_parc_entr]);
+  }, [params.id, isBusca, negociacao?.data_pri_parc_entr, negociacao?.data_ult_parc_entr]);
 
   function handleModule(event: FormEvent) {
     event.preventDefault();
@@ -322,7 +319,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     onChange={(val) => {setNegociacao({ ...negociacao, val_entrada: parseInt(val.target.value) })}}
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 w-40">
                   <Label htmlFor="qtd_parc_ent">Qtd de Parc. Entrada</Label>
                   <Input
                     id="qtd_parc_ent"
@@ -338,27 +335,17 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="data_pri_parc_entr">Data inical Parc. Entrada</Label>
-                  <InputDate
-                    id='data_pri_parc_entr'
-                    name={'data_pri_parc_entr'}
-                    model={negociacao?.data_pri_parc_entr}
-                    setValue={setData_pri_parc_entr}
+                  <InputDateForm
+                    field={negociacao?.data_pri_parc_entr}
                     onClickDay={handleChangeDataIniciaEntrada}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Data final Entrada</Label>
-                 <InputDate
-                  id='data_ult_parc_entr'
-                    name={'data_ult_parc_entr'}
-                    model={negociacao?.data_ult_parc_entr}
-                    setValue={setData_ult_parc_entr}
-                    onClickDay={undefined}
-                    />
-                    <div className="flex flex-col">
-                      <span>{negociacao?.data_pri_parc_entr}</span>
-                      <span>{negociacao?.data_ult_parc_entr} 22</span>
-                    </div>
+                  <InputDateForm
+                    field={negociacao?.data_ult_parc_entr}
+                    onClickDay={handleChangeDataFinalEntrada}
+                  />
                 </div>
               </div>
             </AccordionContent>
@@ -401,33 +388,29 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   function handleChangeDataFinalEntrada(value: any) {
     setNegociacao({
       ...negociacao,
-      data_ult_parc_entr: value,
+      data_ult_parc_entr: value.toISOString().substring(0, 10),
     });
   }
 
   function handleChangeDataIniciaEntrada(value: any) {
-    setData_pri_parc_entr(value)
     // Atualiza a data inicial da parcela de entrada
-    setNegociacao({ ...negociacao, data_pri_parc_entr: value.toISOString().substring(0, 10) });
+    setData_pri_parc_entr(value)
 
     if (negociacao?.qtd_parc_ent) {
       const dataComMesesAdicionados = addMonths(
         value,
         negociacao.qtd_parc_ent
       );
-
+      
       var dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
       console.log(dataFinal.toISOString().substring(0, 10));
-
+      
       // Atualiza a data final da parcela de entrada
       setData_ult_parc_entr(dataFinal)
-      setNegociacao({ ...negociacao, data_ult_parc_entr: dataFinal.toISOString().substring(0, 10) });
-      /* setNegociacao({
-        ...negociacao,
-        data_ult_parc_entr: dataFinal
-      }); */
-      setIsAterData(true)
-      console.log(negociacao.data_ult_parc_entr)
+      setNegociacao({ ...negociacao,
+        data_ult_parc_entr: dataFinal.toISOString().substring(0, 10),
+        data_pri_parc_entr: value.toISOString().substring(0, 10) 
+      });
     } else {
       toast("Verifique a Qtd de Parcelas. ", {
         action: {

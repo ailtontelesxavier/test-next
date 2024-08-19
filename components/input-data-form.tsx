@@ -3,13 +3,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, formatUtcDate } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { Button } from "./ui/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ptBR } from "date-fns/locale";
 
 export default function InputDateForm({
   field,
@@ -18,18 +19,29 @@ export default function InputDateForm({
   field: any;
   onClickDay: any | undefined;
 }) {
+  const [date, setDate] = useState(field && formatUtcDate(new Date(field)) || new Date());
+
+  useEffect(()=> {
+    setDate(formatUtcDate(new Date(field)))
+  },[field])
+
+  // Função para formatar a data
+  function formatDate(date:any){
+    console.log(date)
+    return format(formatUtcDate(date), 'dd-MM-yyyy', { locale: ptBR });
+  };
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-[160px] pl-3 text-left font-normal",
-            !field.value && "text-muted-foreground"
+            "w-[130px] pl-3 text-left font-normal",
+            !field && "text-muted-foreground"
           )}
         >
-          {field.value ? (
-            format(field.value, "dd-MM-yyyy")
+          {field ? (
+            formatDate(date)
           ) : (
             <span>dd-MM-yyyy</span>
           )}
@@ -39,16 +51,20 @@ export default function InputDateForm({
       <PopoverContent className="w-auto p-0" align="start">
         {onClickDay ? (
           <Calendar
-            onChange={field.onChange}
+            onChange={(val:any) => {
+              setDate(formatUtcDate(val));
+            }}
             onClickDay={onClickDay}
-            value={field.value}
+            value={date}
             locale="pt-BR"
             className={"shadow-2xl"}
           />
         ) : (
           <Calendar
-            onChange={field.onChange}
-            value={field.value}
+            onChange={(val:any) => {
+              setDate(formatUtcDate(val));
+            }}
+            value={date}
             locale="pt-BR"
             className={"shadow-2xl"}
           />

@@ -9,9 +9,8 @@ import { format } from "date-fns";
 import Calendar, { OnClickFunc } from "react-calendar";
 import { ptBR } from 'date-fns/locale';
 import "react-calendar/dist/Calendar.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "./ui/input";
-import { UseFormSetValue } from "react-hook-form";
 /**
  * exemplo
  *  <InputDate name="data_temp" setValue={form.setValue} />

@@ -88,10 +88,6 @@ const authOptions = {
         token['sub'] = decoded.sub;
         return token;
       }
-      console.log(getCurrentEpochTime())
-      console.log(token['exp'])
-      console.log(getTimeElapsed(token['iat']))
-      console.log(token)
       const valide = verifyToken(token["access_token"])
       //if (!token.forceNewToken && getCurrentEpochTime() > token['exp']) {
       if (!valide) {
@@ -115,8 +111,13 @@ export { handler as GET, handler as POST };
 
 async function verifyToken(access_token) {
   try {
-    console.log('aqi')
-    const response = await api.post(`/auth/verify-token?token=`+access_token)
+    const response = await axios({
+      url: process.env.NEXTAUTH_BACKEND_URL + "/auth/verify-token",
+      method: "get",
+      headers: { "Authorization": `Bearer ${access_token}`,
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+    });
     //console.log(response)
     if (response.status == 200) {
       return true
