@@ -29,7 +29,6 @@ export default function InputDateForm({
 
   // Função para formatar a data
   function formatDate(date:any){
-    console.log(date)
     return format(formatUtcDate(date), 'dd-MM-yyyy', { locale: ptBR });
   };
   return (

@@ -32,10 +32,13 @@ import obterProximoDiaUtil from "@/lib/utils";
 import InputDateForm from "@/components/input-data-form";
 import InputDate from "@/components/input-data";
 import { Separator } from "@/components/ui/separator";
+import TableParcelamento from "../_components/tableParcelamento";
+import { Icons } from "@/components/icons";
 
 export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   const [negociacao, setNegociacao] = useState<any>({});
 
   const [data_pri_parc_entr, setData_pri_parc_entr] = useState(negociacao?.data_pri_parc_entr);
@@ -58,12 +61,21 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
     setIsBusca(false)
 
     async function getNegociacao() {
-      await api.get(`/juridico/negociacao/${params.id}`).then((response) => {
-        console.log(response);
-        setNegociacao(response.data);
-        setData_pri_parc_entr(negociacao?.data_pri_parc_entr)
-        setData_ult_parc_entr(negociacao?.data_ult_parc_entr)
-      });
+      try {
+        setLoading(true);
+        await api.get(`/juridico/negociacao/${params.id}`).then((response) => {
+          console.log(response);
+          setNegociacao(response.data);
+          setData_pri_parc_entr(negociacao?.data_pri_parc_entr)
+          setData_ult_parc_entr(negociacao?.data_ult_parc_entr)
+        });
+      } catch (error: any) {
+        if (error.response) {
+          setError(error.response.data.detail + "; " + error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
   }, [params.id, isBusca, negociacao?.data_pri_parc_entr, negociacao?.data_ult_parc_entr]);
 
@@ -92,6 +104,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
         <CardDescription>Preencha os dados da negociação.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4 min-w-full">
+      {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="processo">Número do Processo</Label>
@@ -390,13 +403,25 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
             <AccordionTrigger className="w-full flex p-1  pl-2 bg-gray-400 backdrop-blur-sm rounded ">
               Parcelamento Entrada (quando houver)
             </AccordionTrigger>
-            <AccordionContent></AccordionContent>
+            <AccordionContent>
+              <TableParcelamento
+                type={2}
+                negociacao_id={negociacao?.id || 0}
+              />
+            </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
             <AccordionTrigger className="w-full flex p-1  pl-2 bg-gray-400 backdrop-blur-sm rounded ">
               Parcelamento Contrato
             </AccordionTrigger>
-            <AccordionContent></AccordionContent>
+            <AccordionContent>
+              <div>
+                <TableParcelamento
+                  type={1}
+                  negociacao_id={negociacao?.id || 0}
+                />
+              </div>
+            </AccordionContent>
           </AccordionItem>
         </Accordion>
 
