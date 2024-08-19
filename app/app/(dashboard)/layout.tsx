@@ -9,9 +9,9 @@ export default function DashboardLayout({
     children: React.ReactNode
 }) {
     return <section className={cn(
-        "min-h-screen w-screen bg-white text-black flex ",
+        "min-h-screen w-full bg-white text-black flex ",
         {
             "debug-screens": process.env.NODE_ENV === "development"
         }
-    )}><SessionProvider><SideNavbar /><div className="p-8 w-full">{children}</div></SessionProvider></section>
+    )}><SessionProvider><SideNavbar /><div className="p-8 flex-1">{children}</div></SessionProvider></section>
 }

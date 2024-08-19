@@ -31,12 +31,13 @@ import { addMonths, format } from "date-fns";
 import obterProximoDiaUtil from "@/lib/utils";
 import InputDateForm from "@/components/input-data-form";
 import InputDate from "@/components/input-data";
+import { Separator } from "@/components/ui/separator";
 
 export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [negociacao, setNegociacao] = useState<any>({});
-  
+
   const [data_pri_parc_entr, setData_pri_parc_entr] = useState(negociacao?.data_pri_parc_entr);
   const [data_ult_parc_entr, setData_ult_parc_entr] = useState(negociacao?.data_ult_parc_entr);
   const [isBusca, setIsBusca] = useState(true);
@@ -55,7 +56,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
     }
 
     setIsBusca(false)
-    
+
     async function getNegociacao() {
       await api.get(`/juridico/negociacao/${params.id}`).then((response) => {
         console.log(response);
@@ -85,12 +86,12 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
     setError(""); */
   }
   return (
-    <Card className="w-full max-w-2xl">
+    <Card className="w-full min-w-1xl max-w-4xl">
       <CardHeader>
         <CardTitle>Cadastro de Negociação</CardTitle>
         <CardDescription>Preencha os dados da negociação.</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid gap-4 min-w-full">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="processo">Número do Processo</Label>
@@ -219,7 +220,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
               Dados Financeiros do Acordo
             </AccordionTrigger>
             <AccordionContent>
-              <div className="grid grid-flow-col justify-start items-start space-x-1">
+              <div className="grid grid-flow-col m-2 justify-start items-start space-x-1">
                 <div className="space-y-2">
                   <Label htmlFor="val_devido">Valor Devido</Label>
                   <Input
@@ -280,8 +281,6 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     }
                   />
                 </div>
-              </div>
-              <div className="grid grid-flow-col justify-start items-start space-x-1">
                 <div className="space-y-2">
                   <Label htmlFor="taxa_mes">Taxa de Correção ao mês</Label>
                   <Input
@@ -304,10 +303,14 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                   />
                 </div>
               </div>
-              <div className="grid grid-flow-col justify-start items-start space-x-1">
+              <div className="grid grid-flow-col m-2 justify-start items-start space-x-1">
+
+              </div>
+              <div className="grid grid-flow-col m-2 gap-1 justify-start items-start">
                 <div className="space-y-2">
                   <Label htmlFor="val_entrada">Valor Entrada</Label>
                   <Input
+                    className="w-24"
                     id="val_entrada"
                     placeholder="0"
                     type="number"
@@ -316,11 +319,11 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     min="0"
                     required={false}
                     value={negociacao?.val_entrada ?? 0}
-                    onChange={(val) => {setNegociacao({ ...negociacao, val_entrada: parseInt(val.target.value) })}}
+                    onChange={(val) => { setNegociacao({ ...negociacao, val_entrada: parseInt(val.target.value) }) }}
                   />
                 </div>
-                <div className="space-y-2 w-40">
-                  <Label htmlFor="qtd_parc_ent">Qtd de Parc. Entrada</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="qtd_parc_ent">Qtd Parc. Entrada</Label>
                   <Input
                     id="qtd_parc_ent"
                     placeholder="0"
@@ -330,23 +333,56 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     min="0"
                     required={false}
                     value={negociacao?.qtd_parc_ent ?? 0}
-                    onChange={(val) => {setNegociacao({ ...negociacao, qtd_parc_ent: parseInt(val.target.value) })}}
+                    onChange={(val) => { setNegociacao({ ...negociacao, qtd_parc_ent: parseInt(val.target.value) }) }}
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 w-44">
                   <Label htmlFor="data_pri_parc_entr">Data inical Parc. Entrada</Label>
                   <InputDateForm
+                    className={'w-full'}
                     field={negociacao?.data_pri_parc_entr}
                     onClickDay={handleChangeDataIniciaEntrada}
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col m-1">
                   <Label>Data final Entrada</Label>
                   <InputDateForm
                     field={negociacao?.data_ult_parc_entr}
                     onClickDay={handleChangeDataFinalEntrada}
                   />
                 </div>
+              </div>
+              <div className="grid grid-flow-col gap-2 m-2 items-start justify-start">
+                <div className="flex flex-col items-start space-y-2">
+                  <Label htmlFor='val_parc'>Valor Parcela</Label>
+                  <Input
+                    id="val_parc"
+                    type="number"
+                    required
+                    step="0.01"
+                    min="0"
+                    value={negociacao?.val_parc}
+                  />
+                </div>
+                <div className="flex flex-col items-start space-y-2">
+                  <Label htmlFor='data_pri_parc'>Primeira Parcela Acordo</Label>
+                  <InputDateForm
+                    className={'w-full'}
+                    id="data_pri_parc"
+                    field={negociacao?.data_pri_parc}
+                    onClickDay={hundleChengeDataPriParc}
+                  />
+                </div>
+                <div className="flex flex-col items-start space-y-2">
+                  <Label htmlFor='data_ult_parc'>Última Parcela Acordo</Label>
+                  <InputDateForm
+                    id="data_ult_parc"
+                    className={'w-full'}
+                    field={negociacao?.data_ult_parc}
+                    onClickDay={hundleChengeDataUltParc}
+                  />
+                </div>
+
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -356,9 +392,9 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
             </AccordionTrigger>
             <AccordionContent></AccordionContent>
           </AccordionItem>
-        <AccordionItem value="item-3">
+          <AccordionItem value="item-3">
             <AccordionTrigger className="w-full flex p-1  pl-2 bg-gray-400 backdrop-blur-sm rounded ">
-            Parcelamento Contrato
+              Parcelamento Contrato
             </AccordionTrigger>
             <AccordionContent></AccordionContent>
           </AccordionItem>
@@ -401,23 +437,38 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
         value,
         negociacao.qtd_parc_ent
       );
-      
+
       var dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
       console.log(dataFinal.toISOString().substring(0, 10));
-      
+
       // Atualiza a data final da parcela de entrada
       setData_ult_parc_entr(dataFinal)
-      setNegociacao({ ...negociacao,
+      setNegociacao({
+        ...negociacao,
         data_ult_parc_entr: dataFinal.toISOString().substring(0, 10),
-        data_pri_parc_entr: value.toISOString().substring(0, 10) 
+        data_pri_parc_entr: value.toISOString().substring(0, 10)
       });
     } else {
       toast("Verifique a Qtd de Parcelas. ", {
         action: {
           label: "ok",
-          onClick: () => {},
+          onClick: () => { },
         },
       });
     }
+  }
+
+  function hundleChengeDataPriParc(value: any) {
+    setNegociacao({
+      ...negociacao,
+      data_pri_parc: value.toISOString().substring(0, 10),
+    });
+  }
+
+  function hundleChengeDataUltParc(value: any) {
+    setNegociacao({
+      ...negociacao,
+      data_ult_parc: value.toISOString().substring(0, 10),
+    });
   }
 }

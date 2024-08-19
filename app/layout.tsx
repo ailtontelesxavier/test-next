@@ -17,7 +17,7 @@ export default function RootLayout({children}: {children: React.ReactNode;}) {
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen w-screen bg-white text-black flex ",
+          "min-h-screen w-full bg-white text-black flex ",
           inter.className,
           {
             "debug-screens": process.env.NODE_ENV === "development"

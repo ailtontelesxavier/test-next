@@ -15,9 +15,11 @@ import { ptBR } from "date-fns/locale";
 export default function InputDateForm({
   field,
   onClickDay,
+  className,
 }: {
   field: any;
   onClickDay: any | undefined;
+  className?: String | '';
 }) {
   const [date, setDate] = useState(field && formatUtcDate(new Date(field)) || new Date());
 
@@ -36,7 +38,7 @@ export default function InputDateForm({
         <Button
           variant={"outline"}
           className={cn(
-            "w-[130px] pl-3 text-left font-normal",
+            "w-[130px] pl-3 text-left font-normal "+className,
             !field && "text-muted-foreground"
           )}
         >

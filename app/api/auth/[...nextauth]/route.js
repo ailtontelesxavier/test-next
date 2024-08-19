@@ -34,6 +34,7 @@ const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
+    updateAge: BACKEND_ACCESS_TOKEN_LIFETIME,
     maxAge: BACKEND_REFRESH_TOKEN_LIFETIME
   },
 
