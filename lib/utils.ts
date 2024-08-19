@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
-import { isWeekend, addDays } from 'date-fns';
+import { isWeekend, addDays, format } from 'date-fns';
+import { ptBR } from "date-fns/locale";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -35,11 +36,26 @@ export function formatarData(data:string) {
 
   const [ano, mes, dia] = data.split('-').map(String);
 
-  const dataFormatada = `${dia}/${mes}/${ano}`;
+  const dataFormatada = `${dia}-${mes}-${ano}`;
 
   return  dataFormatada;
 
 }
+
+export function formatDateToString(date:Date){
+  return format(formatUtcDate(date), 'dd-MM-yyyy', { locale: ptBR });
+};
+
+export function formatUtcDate(date:Date){
+  return new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+};
 
 export function formatarDataOnchange(input:any) {
 

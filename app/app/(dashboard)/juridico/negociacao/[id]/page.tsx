@@ -27,7 +27,7 @@ import { PlusIcon } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { boolean } from "zod";
 import { toast } from "sonner";
-import { addMonths } from "date-fns";
+import { addMonths, format } from "date-fns";
 import obterProximoDiaUtil from "@/lib/utils";
 import InputDateForm from "@/components/input-data-form";
 import InputDate from "@/components/input-data";
@@ -36,23 +36,38 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [negociacao, setNegociacao] = useState<any>({});
+  
+  const [data_pri_parc_entr, setData_pri_parc_entr] = useState<any>(null)
+  const [data_ult_parc_entr, setData_ult_parc_entr] = useState<any>(null)
   const [isBusca, setIsBusca] = useState(true);
+  const [isAterData, setIsAterData] = useState(false);
 
+  console.log(negociacao?.data_pri_parc_entr)
   console.log(negociacao?.data_ult_parc_entr)
 
   useEffect(() => {
-    if (params.id > 0) {
+    if (params.id > 0 && isBusca) {
       console.log(params.id);
       getNegociacao();
     }
 
+    if(isAterData) {
+      setData_pri_parc_entr(negociacao?.data_pri_parc_entr)
+      setData_ult_parc_entr(negociacao?.data_ult_parc_entr)
+    }
+
+    setIsBusca(false)
+    setIsAterData(false)
+    
     async function getNegociacao() {
       await api.get(`/juridico/negociacao/${params.id}`).then((response) => {
         console.log(response);
         setNegociacao(response.data);
+        setData_pri_parc_entr(negociacao?.data_pri_parc_entr)
+        setData_ult_parc_entr(negociacao?.data_ult_parc_entr)
       });
     }
-  }, [params.id, setIsBusca]);
+  }, [params.id, isBusca, isAterData, negociacao?.data_pri_parc_entr, negociacao?.data_ult_parc_entr]);
 
   function handleModule(event: FormEvent) {
     event.preventDefault();
@@ -326,20 +341,24 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                   <InputDate
                     id='data_pri_parc_entr'
                     name={'data_pri_parc_entr'}
-                    model={negociacao}
-                    setValue={setNegociacao}
+                    model={negociacao?.data_pri_parc_entr}
+                    setValue={setData_pri_parc_entr}
                     onClickDay={handleChangeDataIniciaEntrada}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Data final Entrada</Label>
-                  <InputDate
+                 <InputDate
+                  id='data_ult_parc_entr'
                     name={'data_ult_parc_entr'}
-                    model={negociacao}
-                    setValue={setNegociacao}
-                    onClickDay={handleChangeDataFinalEntrada}
+                    model={negociacao?.data_ult_parc_entr}
+                    setValue={setData_ult_parc_entr}
+                    onClickDay={undefined}
                     />
-                    <span>{negociacao?.data_ult_parc_entr} 22</span>
+                    <div className="flex flex-col">
+                      <span>{negociacao?.data_pri_parc_entr}</span>
+                      <span>{negociacao?.data_ult_parc_entr} 22</span>
+                    </div>
                 </div>
               </div>
             </AccordionContent>
@@ -387,26 +406,28 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   }
 
   function handleChangeDataIniciaEntrada(value: any) {
-    console.log(value)
+    setData_pri_parc_entr(value)
     // Atualiza a data inicial da parcela de entrada
-    setNegociacao({ ...negociacao, data_pri_parc_entr: value });
+    setNegociacao({ ...negociacao, data_pri_parc_entr: value.toISOString().substring(0, 10) });
 
     if (negociacao?.qtd_parc_ent) {
-      console.log('arq')
       const dataComMesesAdicionados = addMonths(
         value,
         negociacao.qtd_parc_ent
       );
-      console.log(obterProximoDiaUtil(dataComMesesAdicionados))
-      //const dataComMesesAdicionados = addMonths(value, negociacao.qtd_parc_ent - 1);
-      //setNegociacao({ ...negociacao, data_ult_parc_entr: obterProximoDiaUtil(dataComMesesAdicionados) });
-      const dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
+
+      var dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
+      console.log(dataFinal.toISOString().substring(0, 10));
 
       // Atualiza a data final da parcela de entrada
-      setNegociacao({
+      setData_ult_parc_entr(dataFinal)
+      setNegociacao({ ...negociacao, data_ult_parc_entr: dataFinal.toISOString().substring(0, 10) });
+      /* setNegociacao({
         ...negociacao,
-        data_ult_parc_entr: dataFinal,
-      });
+        data_ult_parc_entr: dataFinal
+      }); */
+      setIsAterData(true)
+      console.log(negociacao.data_ult_parc_entr)
     } else {
       toast("Verifique a Qtd de Parcelas. ", {
         action: {

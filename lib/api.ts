@@ -11,7 +11,7 @@ api.interceptors.request.use(
     async (config) => {
       const session:any = await getSession();
       //console.log(session)
-      console.log(session.access_token)
+      //console.log(session.access_token)
       if (session && session?.access_token) {
         config.headers['Authorization'] = `Bearer ${session.access_token}`;
       }

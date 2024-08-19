@@ -3,10 +3,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, formatUtcDate } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import Calendar, { OnClickFunc } from "react-calendar";
+import { ptBR } from 'date-fns/locale';
 import "react-calendar/dist/Calendar.css";
 import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
@@ -28,23 +29,12 @@ export default function InputDate({
   setValue: any;
   onClickDay: OnClickFunc | undefined;
 }) {
-  //console.log(model)
-  //console.log(model[name])
-  const [field, setField] = useState(model && model[name] || '');
-  const [objeto, setObjeto] = useState(model)
- useEffect(()=>{
-    console.log(model);
-    if(model && model[name]) {
-      console.log(field)
-      /* if(field){
-        console.log(field);
-        setObjeto({ ...model});
-        setValue({...objeto});
-      } */
-      //setField(model[name])
-    }
-    //setValue(...model)
-  }, [field])
+  const [date, setDate] = useState(model && formatUtcDate(new Date(model)) || new Date());
+
+  // Função para formatar a data
+  function formatDate(date:any){
+    return format(formatUtcDate(date), 'dd-MM-yyyy', { locale: ptBR });
+  };
   return (
     <Popover>
       <div className="flex gap-2">
@@ -53,52 +43,38 @@ export default function InputDate({
         </PopoverTrigger>
         <Input
           name={name}
-          value={field && format(''+field, "dd-MM-yyyy")}
+          value={date && formatDate(date)}
           size={8}
           placeholder="dd-mm-yyyy"
           onChange={(val) => {
             if (val.target.value?.length <= 10) {
-              setField('');
-              //setValue({ ...model, name: undefined })
+              setDate(undefined);
+              setValue(undefined)
               return;
             }
             if (val.target.value?.length === 0) {
-              setField('');
-              //setValue({ ...model, name: undefined })
+              setDate(undefined);
+              setValue(undefined)
               return;
             }
-            setValue({ ...model, name: val });
+            //setValue(val.toISOString().substring(0, 10))
           }}
           className={cn(
             "w-[110px] pl-3 text-left font-normal",
-            !field && "text-muted-foreground",
+            !date && "text-muted-foreground",
           )}
         />
       </div>
       <PopoverContent className="w-auto p-0" align="start">
-        {onClickDay ? (
-          <Calendar
-            onChange={(val) => {
-              setField(''+val);
-              //setValue({ ...model, name: val })
-            }}
-            onClickDay={onClickDay}
-            value={field}
-            locale="pt-BR"
-            className={"shadow-2xl"}
-          />
-        ) : (
-          <Calendar
-            onChange={(val) => {
-              console.log('aqui')
-              setField(''+val);
-              //setValue({ ...model, name: val })
-            }}
-            value={field}
-            locale="pt-BR"
-            className={"shadow-2xl"}
-          />
-        )}
+      <Calendar
+          onChange={(val:any) => {
+            setDate(formatUtcDate(val));
+          }}
+          onClickDay={onClickDay}
+          value={date}
+          locale="pt-BR"
+          className={"shadow-2xl"}
+        />
       </PopoverContent>
     </Popover>
   );

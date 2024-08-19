@@ -12,6 +12,14 @@ const getCurrentEpochTime = () => {
   return Math.floor(new Date().getTime() / 1000);
 };
 
+function getTimeElapsed(iat) {
+  const currentUnixTime = Math.floor(new Date().getTime() / 1000); // Tempo atual em segundos
+  const timeElapsed = currentUnixTime - iat; // Diferença entre o tempo atual e o iat fornecido
+  const newIat = iat + timeElapsed; // Adiciona a diferença ao iat original para obter o novo iat
+
+  return newIat;
+};
+
 export const dynamic = 'force-dynamic';
 
 const SIGN_IN_HANDLERS = {
@@ -23,6 +31,7 @@ const SIGN_IN_PROVIDERS = Object.keys(SIGN_IN_HANDLERS);
 
 const authOptions = {
   // No static secret used
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: BACKEND_REFRESH_TOKEN_LIFETIME
@@ -79,24 +88,17 @@ const authOptions = {
         token['sub'] = decoded.sub;
         return token;
       }
-
-      if (!token.forceNewToken && getCurrentEpochTime() > token['exp']) {
-        try {
-          const response = await api.post("/auth/refresh_token", {
-            refresh_token: token["refresh_token"]
-          });
-          token["access_token"] = response.data.access_token;
-          token["refresh_token"] = response.data.refresh_token;
-
-          const decoded = decodeJwt(response.data.access_token);
-          token['exp'] = decoded.exp;
-          token['sub'] = decoded.sub;
-        } catch (error) {
-          return null;
-        }
+      console.log(getCurrentEpochTime())
+      console.log(token['exp'])
+      console.log(getTimeElapsed(token['iat']))
+      console.log(token)
+      const valide = verifyToken(token["access_token"])
+      //if (!token.forceNewToken && getCurrentEpochTime() > token['exp']) {
+      if (!valide) {
+        return null;
       }
       
-      delete token.forceNewToken;
+      //delete token.forceNewToken;
       return token;
     },
     async session({ token }) {
@@ -110,3 +112,17 @@ const authOptions = {
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
+
+async function verifyToken(access_token) {
+  try {
+    console.log('aqi')
+    const response = await api.post(`/auth/verify-token?token=`+access_token)
+    //console.log(response)
+    if (response.status == 200) {
+      return true
+    }
+  } catch (error) {
+    console.log(error)
+  }
+  return false
+}
