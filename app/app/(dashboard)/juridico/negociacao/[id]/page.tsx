@@ -3,6 +3,7 @@
 import { AlertDestructive } from "@/components/AlertDestructive";
 import { AlertSuccess } from "@/components/AlertSuccess";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardHeader,
@@ -45,6 +46,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [data_ult_parc_entr, setData_ult_parc_entr] = useState(negociacao?.data_ult_parc_entr);
   const [isBusca, setIsBusca] = useState(true);
 
+  const router = useRouter();
   //console.log(negociacao?.data_pri_parc_entr)
   //console.log(negociacao?.data_ult_parc_entr)
 
@@ -426,7 +428,8 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
         </Accordion>
 
       </CardContent>
-      <CardFooter className="flex justify-end">
+      <CardFooter className="flex justify-end gap-4">
+        <Button type="button" variant={"outline"} onClick={()=> router.push('/app/juridico/negociacao')}>Cancelar</Button>
         <Button type="submit">{params.id > 0 ? "Salvar" : "Cadastrar"}</Button>
       </CardFooter>
     </Card>
