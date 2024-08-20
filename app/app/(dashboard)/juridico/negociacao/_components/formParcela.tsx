@@ -27,6 +27,7 @@ export default function FormParcela({
   const [success, setSuccess] = useState("");
   const [parcela, setParcela] = useState<any>({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [type, setType] = useState('1');
 
   useEffect(() => {
     if (!modalIsOpen) {
@@ -37,6 +38,7 @@ export default function FormParcela({
 
     if (id) {
       getParcela();
+      setType('' + parcela?.type);
     }
 
     async function getParcela() {
@@ -46,7 +48,7 @@ export default function FormParcela({
         console.log(parcela?.data)
       });
     }
-  }, [id, modalIsOpen, setIsBusca]);
+  }, [id, modalIsOpen, setIsBusca, parcela?.type]);
 
   function closeModal() {
     setModalIsOpen(false);
@@ -74,14 +76,17 @@ export default function FormParcela({
     setIsBusca(true);
     setError(""); */
   }
+  function handleForm(event: FormEvent) {
+    event.preventDefault();
+  }
   return (
     <>
       <div className="w-full flex justify-end">
-        
+
         <Card>
           <Dialog open={modalIsOpen} onOpenChange={setOpenChange}>
             <DialogTrigger asChild>
-                  <Button
+              <Button
                 variant={"outline"}
                 type="button"
                 size={"sm"}
@@ -95,7 +100,7 @@ export default function FormParcela({
                 )}
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[825px]">
+            <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
                 <DialogTitle>Cadastro de Parcela</DialogTitle>
                 <DialogDescription></DialogDescription>
@@ -104,12 +109,31 @@ export default function FormParcela({
                 <div className="grid gap-4 py-2">
                   <div className="grid grid-flow-col gap-2 justify-start items-start space-x-1">
                     {id > 0 && (
-                      <>
-                        <Label htmlFor="id" className="text-right">
-                          ID: {parcela.id ?? ""}
+                      <div className="flex flex-col w-36 justify-start items-start space-y-2">
+                        <Label className="text-right">
+                          ID:
                         </Label>
-                      </>
+                        <Input disabled value={parcela.id ?? ""} />
+                      </div>
                     )}
+                    <div className="flex flex-col w-36 justify-start items-start space-y-2">
+                      <Label htmlFor="tipo-acordo">Tipo</Label>
+                      <Select value={'' + type} onValueChange={(value) => {
+                        setType(value)
+                        setParcela({
+                          ...parcela,
+                          type: parseInt(value),
+                        });
+                      }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">Contrato</SelectItem>
+                          <SelectItem value="2">Entrada</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <div className="grid grid-flow-col m-2 justify-start items-start space-x-1">
                     <div className="flex flex-col space-y-2">
@@ -120,29 +144,59 @@ export default function FormParcela({
                       />
                     </div>
                     <div className="flex flex-col space-y-2">
-                      <Label>Data</Label>
+                      <Label>Data Pagamento</Label>
                       <InputDateForm
                         field={parcela?.data_pgto}
                         onClickDay={handleChangeDataPgto}
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="executado">Executado</Label>
-                      <Checkbox id="executado" />
+                  <div className="grid grid-flow-col gap-1 m-2 items-start justify-start">
+                    <div className="flex flex-col items-start space-y-2 w-36">
+                      <Label htmlFor='val_parcela'>Valor Parcela</Label>
+                      <Input
+                        id="val_parcela"
+                        type="number"
+                        required
+                        step="0.01"
+                        min="0"
+                        value={parcela?.val_parcela}
+                        onChange={(e) => {
+                          setParcela({
+                            ...parcela,
+                            val_parcela: e.target.value,
+                          });
+                        }}
+                      />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="tipo-acordo">Tipo de Acordo</Label>
-                      <Select id="tipo-acordo">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o tipo de acordo" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="homologacao">Homologação</SelectItem>
-                          <SelectItem value="termo-acordo">Termo de Acordo</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    <div className="flex flex-col items-start space-y-2">
+                      <Label htmlFor='val_pago'>Primeira Parcela Acordo</Label>
+                      <Input
+                        id="val_pago"
+                        type="number"
+                        required
+                        step="0.01"
+                        min="0"
+                        value={parcela?.val_pago}
+                        onChange={(e) => {
+                          setParcela({
+                            ...parcela,
+                            val_pago: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2 gap-2">
+                      <Checkbox id="jurus" />
+                      <Label htmlFor="jurus">Juros</Label>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2 gap-2">
+                      <Label htmlFor="jurus">Obs.</Label>
+                      <Textarea className="w-full" />
                     </div>
                   </div>
 
@@ -158,7 +212,7 @@ export default function FormParcela({
                   <Button type="submit">Salvar</Button>
                 </div>
               </form>
-              <DialogFooter>
+              <DialogFooter className="w-full">
                 <section className="w-full">
                   {success && (
                     <AlertSuccess setSuccess={setSuccess}>{success}</AlertSuccess>
@@ -178,14 +232,15 @@ export default function FormParcela({
   function handleChangeData(value: any) {
     setParcela({
       ...parcela,
-      data: value.toISOString().substring(0, 10),
+      data: value,
     });
   }
   function handleChangeDataPgto(value: any) {
     console.log(typeof value)
     setParcela({
       ...parcela,
-      data_pgto: value.toISOSTring().substring(0, 10),
+      data: parcela.data,
+      data_pgto: value,
     });
   }
 }

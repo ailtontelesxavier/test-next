@@ -91,12 +91,12 @@ const authOptions = {
         token['sub'] = decoded.sub;
         return token;
       }
-      const valide = verifyToken(token["access_token"])
+      const valide = await verifyToken(token["access_token"])
       //if (!token.forceNewToken && getCurrentEpochTime() > token['exp']) {
       if (!valide) {
         //delete token.access_token;
         signOut();
-        //return null;
+        return null;
       }
       
       //delete token.forceNewToken;
@@ -123,12 +123,14 @@ async function verifyToken(access_token) {
       headers: { "Authorization": `Bearer ${access_token}`,
         //"Content-Type": "application/x-www-form-urlencoded"
       },
+    }).catch((error) => {
+      //console.log(error)
+      return false;
     });
     //console.log(response)
     if (response.status == 200) {
       return true
     }
-    if (response.status == 405) return false
     return false
   } catch (error) {
     console.log(error)
