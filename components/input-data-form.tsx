@@ -21,10 +21,10 @@ export default function InputDateForm({
   onClickDay: any | undefined;
   className?: String | '';
 }) {
-  const [date, setDate] = useState(field && formatUtcDate(new Date(field)) || new Date());
+  const [date, setDate] = useState<any>(field && formatUtcDate(new Date(field)) || new Date());
 
   useEffect(()=> {
-    setDate(formatUtcDate(new Date(field)))
+    setDate(formatUtcDate(field && formatUtcDate(new Date(field)) || new Date()))
   },[field])
 
   // Função para formatar a data
