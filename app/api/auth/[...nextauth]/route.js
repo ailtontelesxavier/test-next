@@ -1,11 +1,12 @@
 import NextAuth from "next-auth";
+import { signOut } from "next-auth/react";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 import api from "@/lib/api";
 import { decodeJwt } from 'jose';
 
 // These two values should be a bit less than actual token lifetimes
-const BACKEND_ACCESS_TOKEN_LIFETIME = 45 * 60;            // 45 minutes
+const BACKEND_ACCESS_TOKEN_LIFETIME = 40 * 60;            // 40 minutes
 const BACKEND_REFRESH_TOKEN_LIFETIME = 1 * 24 * 60 * 60;  // 1 days
 
 const getCurrentEpochTime = () => {
@@ -30,6 +31,7 @@ const SIGN_IN_HANDLERS = {
 const SIGN_IN_PROVIDERS = Object.keys(SIGN_IN_HANDLERS);
 
 const authOptions = {
+  url: process.env.NEXTAUTH_URL || "http://localhost:3000",
   // No static secret used
   secret: process.env.NEXTAUTH_SECRET,
   session: {
@@ -92,8 +94,9 @@ const authOptions = {
       const valide = verifyToken(token["access_token"])
       //if (!token.forceNewToken && getCurrentEpochTime() > token['exp']) {
       if (!valide) {
-        delete token.access_token;
-        return null;
+        //delete token.access_token;
+        signOut();
+        //return null;
       }
       
       //delete token.forceNewToken;

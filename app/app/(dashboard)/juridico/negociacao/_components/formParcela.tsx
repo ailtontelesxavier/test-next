@@ -1,5 +1,6 @@
 import { AlertDestructive } from "@/components/AlertDestructive";
 import { AlertSuccess } from "@/components/AlertSuccess";
+import InputDateForm from "@/components/input-data-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,14 +16,16 @@ import { FormEvent, useEffect, useState } from "react";
 
 export default function FormParcela({
   id,
+  negociacao_id,
   setIsBusca,
 }: {
   id: number;
+  negociacao_id: number;
   setIsBusca: Function;
 }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [negociacao, setNegociacao] = useState<any>({});
+  const [parcela, setParcela] = useState<any>({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
@@ -33,13 +36,14 @@ export default function FormParcela({
     }
 
     if (id) {
-      getNegociacao();
+      getParcela();
     }
 
-    async function getNegociacao() {
-      await api.get(`/permissoes/module/${id}`).then((response) => {
+    async function getParcela() {
+      await api.get(`/juridico/parcelamento/${id}`).then((response) => {
         console.log(response);
-        setNegociacao(response.data);
+        setParcela(response.data);
+        console.log(parcela?.data)
       });
     }
   }, [id, modalIsOpen, setIsBusca]);
@@ -71,104 +75,117 @@ export default function FormParcela({
     setError(""); */
   }
   return (
-    <Card className="w-full max-w-2xl">
-      <Dialog open={modalIsOpen} onOpenChange={setOpenChange}>
-        <DialogTrigger asChild>
-          <Button
-            variant={"outline"}
-            type="button"
-            size={"sm"}
-            title={id ? "editar" : "adicionar negociacao"}
-            onClick={() => setModalIsOpen(true)}
-          >
-            {id ? (
-              <Pencil2Icon className="h-4 w-4" />
-            ) : (
-              <PlusIcon className="h-4 w-4" />
-            )}
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Cadastro de Negociacao</DialogTitle>
-            <DialogDescription></DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleModule}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                {id > 0 && (
-                  <>
-                    <Label htmlFor="id" className="text-right">
-                      ID
-                    </Label>
-                    <Input
-                      id="id"
-                      type="text"
-                      placeholder="id"
-                      className="col-span-3"
-                      disabled={true}
-                      value={module.id ?? ""}
-                    />
-                  </>
-                )}
-                <Label htmlFor="title" className="text-right">
-                  Nome
-                </Label>
-                
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="processo">Número do Processo</Label>
-            <Input id="processo" placeholder="Informe o número do processo" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="contrato">Contrato</Label>
-            <Input id="contrato" placeholder="Informe o contrato" />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="executado">Executado</Label>
-            <Checkbox id="executado" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="tipo-acordo">Tipo de Acordo</Label>
-            <Select id="tipo-acordo">
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o tipo de acordo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="homologacao">Homologação</SelectItem>
-                <SelectItem value="termo-acordo">Termo de Acordo</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+    <>
+      <div className="w-full flex justify-end">
         
-            </div>
-            <div className="flex items-end justify-end gap-2">
-              <Button
+        <Card>
+          <Dialog open={modalIsOpen} onOpenChange={setOpenChange}>
+            <DialogTrigger asChild>
+                  <Button
+                variant={"outline"}
                 type="button"
-                variant={"secondary"}
-                onClick={() => closeModal()}
+                size={"sm"}
+                title={id ? "editar" : "adicionar parcela"}
+                onClick={() => setModalIsOpen(true)}
               >
-                Cancelar
+                {id ? (
+                  <Pencil2Icon className="h-4 w-4" />
+                ) : (
+                  <PlusIcon className="h-4 w-4" />
+                )}
               </Button>
-              <Button type="submit">Salvar</Button>
-            </div>
-          </form>
-          <DialogFooter>
-            <section className="w-full">
-              {success && (
-                <AlertSuccess setSuccess={setSuccess}>{success}</AlertSuccess>
-              )}
-              {error && (
-                <AlertDestructive setError={setError}>{error}</AlertDestructive>
-              )}
-            </section>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </Card>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[825px]">
+              <DialogHeader>
+                <DialogTitle>Cadastro de Parcela</DialogTitle>
+                <DialogDescription></DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleModule}>
+                <div className="grid gap-4 py-2">
+                  <div className="grid grid-flow-col gap-2 justify-start items-start space-x-1">
+                    {id > 0 && (
+                      <>
+                        <Label htmlFor="id" className="text-right">
+                          ID: {parcela.id ?? ""}
+                        </Label>
+                      </>
+                    )}
+                  </div>
+                  <div className="grid grid-flow-col m-2 justify-start items-start space-x-1">
+                    <div className="flex flex-col space-y-2">
+                      <Label>Data</Label>
+                      <InputDateForm
+                        field={parcela?.data}
+                        onClickDay={handleChangeData}
+                      />
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                      <Label>Data</Label>
+                      <InputDateForm
+                        field={parcela?.data_pgto}
+                        onClickDay={handleChangeDataPgto}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="executado">Executado</Label>
+                      <Checkbox id="executado" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="tipo-acordo">Tipo de Acordo</Label>
+                      <Select id="tipo-acordo">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o tipo de acordo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="homologacao">Homologação</SelectItem>
+                          <SelectItem value="termo-acordo">Termo de Acordo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                </div>
+                <div className="flex items-end justify-end gap-2">
+                  <Button
+                    type="button"
+                    variant={"secondary"}
+                    onClick={() => closeModal()}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit">Salvar</Button>
+                </div>
+              </form>
+              <DialogFooter>
+                <section className="w-full">
+                  {success && (
+                    <AlertSuccess setSuccess={setSuccess}>{success}</AlertSuccess>
+                  )}
+                  {error && (
+                    <AlertDestructive setError={setError}>{error}</AlertDestructive>
+                  )}
+                </section>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </Card>
+      </div>
+    </>
   );
+
+  function handleChangeData(value: any) {
+    setParcela({
+      ...parcela,
+      data: value.toISOString().substring(0, 10),
+    });
+  }
+  function handleChangeDataPgto(value: any) {
+    console.log(typeof value)
+    setParcela({
+      ...parcela,
+      data_pgto: value.toISOSTring().substring(0, 10),
+    });
+  }
 }

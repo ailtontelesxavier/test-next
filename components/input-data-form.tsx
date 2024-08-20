@@ -23,12 +23,14 @@ export default function InputDateForm({
 }) {
   const [date, setDate] = useState<any>(field && formatUtcDate(new Date(field)) || new Date());
 
-  useEffect(()=> {
-    setDate(formatUtcDate(field && formatUtcDate(new Date(field)) || new Date()))
-  },[field])
+  useEffect(() => {
+    if (field) { 
+      setDate(formatUtcDate(field && formatUtcDate(new Date(field)) || new Date()));
+    }
+  }, [field])
 
   // Função para formatar a data
-  function formatDate(date:any){
+  function formatDate(date: any) {
     return format(formatUtcDate(date), 'dd-MM-yyyy', { locale: ptBR });
   };
   return (
@@ -37,7 +39,7 @@ export default function InputDateForm({
         <Button
           variant={"outline"}
           className={cn(
-            "w-[130px] pl-3 text-left font-normal "+className,
+            "w-[130px] pl-3 text-left font-normal " + className,
             !field && "text-muted-foreground"
           )}
         >
@@ -52,7 +54,7 @@ export default function InputDateForm({
       <PopoverContent className="w-auto p-0" align="start">
         {onClickDay ? (
           <Calendar
-            onChange={(val:any) => {
+            onChange={(val: any) => {
               setDate(formatUtcDate(val));
             }}
             onClickDay={onClickDay}
@@ -62,7 +64,7 @@ export default function InputDateForm({
           />
         ) : (
           <Calendar
-            onChange={(val:any) => {
+            onChange={(val: any) => {
               setDate(formatUtcDate(val));
             }}
             value={date}

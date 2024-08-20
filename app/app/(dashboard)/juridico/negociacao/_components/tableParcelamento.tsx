@@ -19,6 +19,7 @@ import { formatarData, formatUtcDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
+import FormParcela from "./formParcela";
 export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2, negociacao_id: number }) {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -58,8 +59,8 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
 
     return (
         <div className="mt-2 space-y-2">
-            <div className="w-full flex justify-end">
-                <Button type="button" className="rounded-3xl" variant={"outline"} >Adicionar Parcela</Button>
+            <div>
+                <FormParcela id={0} negociacao_id={negociacao_id} setIsBusca={setIsBusca}/>
             </div>
             <Table>
                 <TableHeader>
@@ -112,7 +113,7 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
                                     {parcelamento.is_val_juros}
                                 </TableCell>
                                 <TableCell>
-
+                                    <FormParcela id={parcelamento.id} negociacao_id={negociacao_id} setIsBusca={setIsBusca}/>
                                 </TableCell>
                             </TableRow>
 
