@@ -18,12 +18,14 @@ import api from "@/lib/api";
 import { formatarData, formatUtcDate } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { ptBR } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
 export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2, negociacao_id: number }) {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState<number>(1);
     const [loading, setLoading] = useState(false);
+    const [isBusca, setIsBusca] = useState(true);
     const [parcelamentoLis, setParcelamentoList] = useState([]);
 
     useEffect(() => {
@@ -48,14 +50,17 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
             }
         }
 
-    }, [page])
+    }, [page, negociacao_id, type])
 
     function formatDate(date:any){
         return format(formatUtcDate(date), 'dd-MM-yyyy', { locale: ptBR });
     };
 
     return (
-        <div>
+        <div className="mt-2 space-y-2">
+            <div className="w-full flex justify-end">
+                <Button type="button" className="rounded-3xl" variant={"outline"} >Adicionar Parcela</Button>
+            </div>
             <Table>
                 <TableHeader>
                     <TableRow>

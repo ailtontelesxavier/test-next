@@ -325,7 +325,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                 <div className="space-y-2">
                   <Label htmlFor="val_entrada">Valor Entrada</Label>
                   <Input
-                    className="w-24"
+                    className="w-36"
                     id="val_entrada"
                     placeholder="0"
                     type="number"
@@ -367,8 +367,8 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                   />
                 </div>
               </div>
-              <div className="grid grid-flow-col gap-2 m-2 items-start justify-start">
-                <div className="flex flex-col items-start space-y-2">
+              <div className="grid grid-flow-col gap-1 m-2 items-start justify-start">
+                <div className="flex flex-col items-start space-y-2 w-36">
                   <Label htmlFor='val_parc'>Valor Parcela</Label>
                   <Input
                     id="val_parc"

@@ -13,7 +13,7 @@ import { Pencil2Icon } from "@radix-ui/react-icons";
 import { PlusIcon } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 
-export default function FormNegociacao({
+export default function FormParcela({
   id,
   setIsBusca,
 }: {

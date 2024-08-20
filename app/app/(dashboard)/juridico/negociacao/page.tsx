@@ -25,7 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchIcon } from "lucide-react";
-import FormNegociacao from "./_components/formNegociacao";
+import FormNegociacao from "./_components/formParcela";
 import { useSession } from "next-auth/react";
 import { Pencil2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { AlertSuccess } from "@/components/AlertSuccess";

@@ -92,6 +92,7 @@ const authOptions = {
       const valide = verifyToken(token["access_token"])
       //if (!token.forceNewToken && getCurrentEpochTime() > token['exp']) {
       if (!valide) {
+        delete token.access_token;
         return null;
       }
       
@@ -112,19 +113,23 @@ export { handler as GET, handler as POST };
 
 async function verifyToken(access_token) {
   try {
+    //console.log(access_token)
     const response = await axios({
       url: process.env.NEXTAUTH_BACKEND_URL + "/auth/verify-token",
       method: "get",
       headers: { "Authorization": `Bearer ${access_token}`,
-        "Content-Type": "application/x-www-form-urlencoded"
+        //"Content-Type": "application/x-www-form-urlencoded"
       },
     });
     //console.log(response)
     if (response.status == 200) {
       return true
     }
+    if (response.status == 405) return false
+    return false
   } catch (error) {
     console.log(error)
+    return false
   }
   return false
 }
