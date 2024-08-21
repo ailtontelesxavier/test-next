@@ -459,9 +459,9 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                     parseFloat(val.target.value),
                     negociacao.qtd
                   );
-                  setNegociacao({ ...negociacao, val_parc: valor });
                   setNegociacao({
                     ...negociacao,
+                    val_parc: valor,
                     taxa_mes: parseFloat(val.target.value),
                   });
                 }}
