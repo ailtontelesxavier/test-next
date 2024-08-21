@@ -6,7 +6,7 @@ import api from "@/lib/api";
 import { decodeJwt } from 'jose';
 
 // These two values should be a bit less than actual token lifetimes
-const BACKEND_ACCESS_TOKEN_LIFETIME = 40 * 60;            // 40 minutes
+const BACKEND_ACCESS_TOKEN_LIFETIME = 60 * 60;            // 40 minutes
 const BACKEND_REFRESH_TOKEN_LIFETIME = 1 * 24 * 60 * 60;  // 1 days
 
 const getCurrentEpochTime = () => {
