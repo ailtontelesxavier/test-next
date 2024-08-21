@@ -7,6 +7,7 @@ import Card, { CardContent, CardProps } from "@/components/Card";
 import BarChart from "@/components/BarChart";
 import SalesCard, { SalesProps } from "@/components/SalesCard";
 import { useEffect, useState } from "react";
+import api from "@/lib/api";
 
 const cardData: CardProps[] = [
   {
@@ -73,10 +74,9 @@ export default function Home() {
   }, [])
 
   async function obterUsers() {
-      const resp = await fetch('http://127.0.0.1:8000/users/?skip=0&limit=100')
-      const users = await resp.json()
-      console.log(users.users)
-      setUsers(users.users)
+    await api.get(`/users/`).then((response) => {
+      setUsers(response.data.users)
+    });
   }
 
   return (

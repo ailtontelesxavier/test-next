@@ -92,14 +92,56 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
 
   function handleNegociacao(event: FormEvent) {
     event.preventDefault();
-    console.log(event)
-
-    /* if (module.title.length < 3) {
-      setError("O nome deve ter pelo menos 3 caracteres");
+    const formData = new FormData(event.target as HTMLFormElement);
+    if (!(formData.get('processo') as String).trim()) {
+      setError("O Campo Número do Processo obrigatório");
+      return;
+    }
+    if (!(formData.get('executado') as String).trim()) {
+      setError("O Campo executado obrigatório");
+      return;
+    }
+    if (!(formData.get('contrato') as String).trim()) {
+      setError("O Campo contrato obrigatório");
       return;
     }
 
-    */
+    if (!(formData.get('data_pri_parc') as String).trim()) {
+      setError("O Campo Primeira Parcela Acordo obrigatório");
+      return;
+    }
+    if (!(formData.get('data_ult_parc') as String).trim()) {
+      setError("O Campo Última Parcela Acordo obrigatório");
+      return;
+    }
+
+    setNegociacao({
+      ...negociacao,
+      processo: formData.get('processo'),
+      executado: formData.get('executado'),
+      contrato: formData.get('contrato'),
+      val_devido: formData.get('val_devido'),
+      val_desconto: formData.get('val_desconto') ?? null,
+      val_neg: formData.get('val_neg'),
+      data_pri_parc: formData.get('data_pri_parc'),
+      data_ult_parc: formData.get('data_ult_parc'),
+      val_entrada: formData.get('val_entrada'),
+      qtd_parc_ent: formData.get('qtd_parc_ent') ?? 0,
+      data_pri_parc_entr: !(formData.get('data_pri_parc_entr') as String).trim() ? null : formData.get('data_pri_parc_entr') ?? null,
+      data_ult_parc_entr: !(formData.get('data_ult_parc_entr') as String).trim() ? null : formData.get('data_ult_parc_entr') ?? null,
+      obs_val_neg: formData.get('obs_val_neg'),
+      is_term_ex_jud: formData.get('is_term_ex_jud') ?? false,
+      is_hom_ext_jud: formData.get('is_hom_ext_jud') ?? false,
+      qtd: formData.get('qtd'),
+      taxa_mes: formData.get('taxa_mes'),
+      val_parc: formData.get('val_parc'),
+      is_cal_parc_mensal: formData.get('is_cal_parc_mensal') ?? false,
+      is_cal_parc_entrada: formData.get('is_cal_parc_entrada') ?? false,
+      is_descumprido: formData.get('is_descumprido') ?? false,
+      is_liquidado: formData.get('is_liquidado') ?? false,
+      is_retorno_execucao: formData.get('is_retorno_execucao') ?? false,
+    })
+
     if (params.id > 0) {
       updateNegociacao();
       setIsBusca(true);
@@ -116,48 +158,6 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
       //delete negociacao.id
       console.log(negociacao)
 
-      setNegociacao({
-        ...negociacao,
-        processo: negociacao.processo || '',
-        executado: negociacao.executado || '',
-        contrato: negociacao.contrato || '',
-        val_devido: negociacao.val_devido || null,
-      })
-      /*
-
-        processo=negociacao.processo,
-        executado=negociacao.executado,
-        contrato=negociacao.contrato,
-        val_devido=(
-            negociacao.val_devido
-            if negociacao.val_devido is not None
-            else Decimal(0)
-        ),
-        val_desconto=(
-            negociacao.val_desconto
-            if negociacao.val_desconto is not None
-            else Decimal(0)
-        ),
-        val_neg=negociacao.val_neg,
-        data_pri_parc=(negociacao.data_pri_parc),  # type: ignore
-        data_ult_parc=negociacao.data_ult_parc,  # type: ignore
-        val_entrada=negociacao.val_entrada,  # type: ignore
-        qtd_parc_ent=negociacao.qtd_parc_ent,  # type: ignore
-        data_pri_parc_entr=negociacao.data_pri_parc_entr,  # type: ignore
-        data_ult_parc_entr=negociacao.data_ult_parc_entr,  # type: ignore
-        obs_val_neg=negociacao.obs_val_neg,
-        is_term_ex_jud=negociacao.is_term_ex_jud,
-        is_hom_ext_jud=negociacao.is_hom_ext_jud,
-        qtd=negociacao.qtd,
-        taxa_mes=negociacao.taxa_mes,
-        val_parc=negociacao.val_parc,
-        is_cal_parc_mensal=negociacao.is_cal_parc_mensal,
-        is_cal_parc_entrada=negociacao.is_cal_parc_entrada,
-        is_descumprido=negociacao.is_descumprido,
-        is_liquidado=negociacao.is_liquidado,
-        is_retorno_execucao=negociacao.is_retorno_execucao,
-
-      */
       await api
         .post("/juridico/negociacao", {
           ...negociacao,
@@ -166,8 +166,17 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
           if (response.status === 201) {
             setSuccess("Cadastrado com sucesso");
           }
+          router.push('/app/juridico/negociacao/'+response.data.id);
         })
-        .catch((error) => setError("Error interno: " + error));
+        .catch((error) => {
+          //console.log(JSON.parse(error.request.response).detail)
+          const responseObject = JSON.parse(error.request.response)
+          var errors = ''
+          responseObject.detail.forEach((val: any) => {
+            errors += (`(Campo: ${val.loc[1]} Erro: ${val.msg}) `)
+          });
+          setError("Error interno: " + errors)
+        });
     } catch (error: any) {
       if (error.response) {
         setError(error.response.data.detail + "; " + error.message);
@@ -178,7 +187,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   async function updateNegociacao() {
     try {
       await api
-        .put("/juridico/negociacao/" + params.id, {
+        .patch("/juridico/negociacao/" + params.id, {
           ...negociacao,
         })
         .then((response: any) => {
@@ -209,6 +218,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                 id="processo"
                 placeholder="Informe o número do processo"
                 name='processo'
+                required
                 value={negociacao?.processo ?? ""}
                 onChange={(e) =>
                   setNegociacao({ ...negociacao, processo: e.target.value })
@@ -221,6 +231,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                 id="contrato"
                 placeholder="Informe o contrato"
                 name="contrato"
+                required
                 value={negociacao?.contrato ?? ""}
                 onChange={(e) =>
                   setNegociacao({ ...negociacao, contrato: e.target.value })
@@ -234,6 +245,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
               id="executado"
               placeholder="Informe o executado"
               name='executado'
+              required
               value={negociacao?.executado ?? ""}
               onChange={(e) =>
                 setNegociacao({ ...negociacao, executado: e.target.value })
@@ -333,208 +345,223 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
               }
             />
           </div>
+          <span className="w-full flex p-1  pl-2 bg-gray-400 backdrop-blur-sm rounded ">
+            Dados Financeiros do Acordo
+          </span>
+          <div className="grid grid-flow-col m-2 justify-start items-start space-x-1">
+            <div className="space-y-2">
+              <Label htmlFor="val_devido">Valor Devido</Label>
+              <Input
+                className="w-28"
+                id="val_devido"
+                type="number"
+                size={10}
+                step="0.01"
+                min="0"
+                name="val_devido"
+                placeholder="0"
+                required
+                value={negociacao?.val_devido ?? ""}
+                onChange={(e) =>
+                  setNegociacao({
+                    ...negociacao,
+                    val_devido: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="val_desconto">Valor de Desconto</Label>
+              <Input
+                className="w-32"
+                id="val_desconto"
+                placeholder="0"
+                type="number"
+                size={10}
+                step="0.01"
+                min="0"
+                required={false}
+                name='val_desconto'
+                value={negociacao?.val_desconto ?? 0}
+                onChange={(e) =>
+                  setNegociacao({
+                    ...negociacao,
+                    val_desconto: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="val_neg">Valor Negociado</Label>
+              <Input
+                className="w-32"
+                id="val_neg"
+                placeholder="0"
+                type="number"
+                size={10}
+                step="0.01"
+                min="0"
+                name='val_neg'
+                required
+                value={negociacao?.val_neg ?? ""}
+                onChange={(e) =>
+                  setNegociacao({
+                    ...negociacao,
+                    val_neg: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="qtd">Qtd de Parcelas</Label>
+              <Input
+                className="w-28"
+                id="qtd"
+                placeholder="0"
+                type="number"
+                size={10}
+                step="1"
+                min="0"
+                name='qtd'
+                required
+                value={negociacao?.qtd ?? ""}
+                onChange={(e) =>
+                  setNegociacao({ ...negociacao, qtd: e.target.value })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="taxa_mes">Taxa de Correção ao mês</Label>
+              <Input
+                id="taxa_mes"
+                placeholder="0"
+                type="number"
+                size={10}
+                step="0.01"
+                min="0"
+                name='taxa_mes'
+                required
+                value={negociacao?.taxa_mes ?? ""}
+                onChange={(val) => {
+                  var valor = calculatePGTO(
+                    parseFloat(negociacao.val_neg),
+                    parseFloat(val.target.value),
+                    negociacao.qtd
+                  );
+                  setNegociacao({ ...negociacao, val_parc: valor });
+                  setNegociacao({
+                    ...negociacao,
+                    taxa_mes: parseFloat(val.target.value),
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div className="grid grid-flow-col gap-1 justify-start items-start">
+            <div className="space-y-2">
+              <Label htmlFor="val_entrada">Valor Entrada</Label>
+              <Input
+                className="w-36"
+                id="val_entrada"
+                placeholder="0"
+                type="number"
+                size={10}
+                step="0.01"
+                min="0"
+                required={false}
+                name="val_entrada"
+                value={negociacao?.val_entrada ?? 0}
+                onChange={(val) => {
+                  setNegociacao({
+                    ...negociacao,
+                    val_entrada: parseInt(val.target.value),
+                  });
+                }}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="qtd_parc_ent">Qtd Parc. Entrada</Label>
+              <Input
+                id="qtd_parc_ent"
+                placeholder="0"
+                type="number"
+                size={2}
+                step="1"
+                min="0"
+                name='qtd_parc_ent'
+                required={false}
+                value={negociacao?.qtd_parc_ent ?? 0}
+                onChange={(val) => {
+                  setNegociacao({
+                    ...negociacao,
+                    qtd_parc_ent: parseInt(val.target.value),
+                  });
+                }}
+              />
+            </div>
+            <div className="space-y-2 w-44">
+              <Label htmlFor="data_pri_parc_entr">
+                Data inical Parc. Entrada
+              </Label>
+              <InputDateForm
+                className={"w-full"}
+                field={negociacao?.data_pri_parc_entr}
+                onClickDay={handleChangeDataIniciaEntrada}
+              />
+              <input hidden={true} name="data_pri_parc_entr" value={negociacao?.data_pri_parc_entr ?? null} />
+            </div>
+            <div className="flex flex-col m-3 space-y-2 ">
+              <Label>Data final Entrada</Label>
+              <InputDateForm
+                field={negociacao?.data_ult_parc_entr}
+                onClickDay={handleChangeDataFinalEntrada}
+              />
+              <input hidden={true} name="data_ult_parc_entr" value={negociacao?.data_ult_parc_entr ?? null} />
+            </div>
+          </div>
+          <div className="grid grid-flow-col gap-1 m-2 items-start justify-start">
+            <div className="flex flex-col items-start space-y-2 w-36">
+              <Label htmlFor="val_parc">Valor Parcela</Label>
+              <Input
+                id="val_parc"
+                type="number"
+                name="val_parc"
+                required
+                step="0.01"
+                min="0"
+                value={negociacao?.val_parc ?? ''}
+                onChange={(val) => {
+                  setNegociacao({
+                    ...negociacao,
+                    val_parc: Number(val.target.value)
+                  })
+                }}
+              />
+            </div>
+            <div className="flex flex-col items-start space-y-2">
+              <Label htmlFor="data_pri_parc">
+                Primeira Parcela Acordo
+              </Label>
+              <InputDateForm
+                className={"w-full"}
+                id="data_pri_parc"
+                field={negociacao?.data_pri_parc}
+                onClickDay={hundleChengeDataPriParc}
+              />
+              <input hidden={true} name="data_pri_parc" value={negociacao?.data_pri_parc} />
+            </div>
+            <div className="flex flex-col items-start space-y-2">
+              <Label htmlFor="data_ult_parc">Última Parcela Acordo</Label>
+              <InputDateForm
+                id="data_ult_parc"
+                className={"w-full"}
+                field={negociacao?.data_ult_parc}
+                onClickDay={hundleChengeDataUltParc}
+              />
+              <input hidden={true} name="data_ult_parc" value={negociacao?.data_ult_parc} />
+            </div>
+          </div>
           <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger className="w-full flex p-1  pl-2 bg-gray-400 backdrop-blur-sm rounded ">
-                Dados Financeiros do Acordo
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid grid-flow-col m-2 justify-start items-start space-x-1">
-                  <div className="space-y-2">
-                    <Label htmlFor="val_devido">Valor Devido</Label>
-                    <Input
-                      id="val_devido"
-                      type="number"
-                      size={10}
-                      step="0.01"
-                      min="0"
-                      name="val_devido"
-                      value={negociacao?.val_devido ?? ""}
-                      onChange={(e) =>
-                        setNegociacao({
-                          ...negociacao,
-                          val_devido: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="val_desconto">Valor de Desconto</Label>
-                    <Input
-                      id="val_desconto"
-                      placeholder="0"
-                      type="number"
-                      size={10}
-                      step="0.01"
-                      min="0"
-                      required={false}
-                      name='val_desconto'
-                      value={negociacao?.val_desconto ?? ""}
-                      onChange={(e) =>
-                        setNegociacao({
-                          ...negociacao,
-                          val_desconto: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="val_neg">Valor Negociado</Label>
-                    <Input
-                      id="val_neg"
-                      placeholder="0"
-                      type="number"
-                      size={10}
-                      step="0.01"
-                      min="0"
-                      name='val_neg'
-                      value={negociacao?.val_neg ?? ""}
-                      onChange={(e) =>
-                        setNegociacao({
-                          ...negociacao,
-                          val_neg: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="qtd">Qtd de Parcelas</Label>
-                    <Input
-                      id="qtd"
-                      placeholder="0"
-                      type="number"
-                      size={10}
-                      step="1"
-                      min="0"
-                      name='qtd'
-                      value={negociacao?.qtd ?? ""}
-                      onChange={(e) =>
-                        setNegociacao({ ...negociacao, qtd: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="taxa_mes">Taxa de Correção ao mês</Label>
-                    <Input
-                      id="taxa_mes"
-                      placeholder="0"
-                      type="number"
-                      size={10}
-                      step="0.01"
-                      min="0"
-                      name='taxa_mes'
-                      value={negociacao?.taxa_mes ?? 0}
-                      onChange={(val) => {
-                        var valor = calculatePGTO(
-                          parseFloat(negociacao.val_neg),
-                          parseFloat(val.target.value),
-                          negociacao.qtd
-                        );
-                        setNegociacao({ ...negociacao, val_parc: valor });
-                        setNegociacao({
-                          ...negociacao,
-                          taxa_mes: parseFloat(val.target.value),
-                        });
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-flow-col m-2 justify-start items-start space-x-1"></div>
-                <div className="grid grid-flow-col m-2 gap-1 justify-start items-start">
-                  <div className="space-y-2">
-                    <Label htmlFor="val_entrada">Valor Entrada</Label>
-                    <Input
-                      className="w-36"
-                      id="val_entrada"
-                      placeholder="0"
-                      type="number"
-                      size={10}
-                      step="0.01"
-                      min="0"
-                      required={false}
-                      name="val_entrada"
-                      value={negociacao?.val_entrada ?? 0}
-                      onChange={(val) => {
-                        setNegociacao({
-                          ...negociacao,
-                          val_entrada: parseInt(val.target.value),
-                        });
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="qtd_parc_ent">Qtd Parc. Entrada</Label>
-                    <Input
-                      id="qtd_parc_ent"
-                      placeholder="0"
-                      type="number"
-                      size={2}
-                      step="1"
-                      min="0"
-                      name='qtd_parc_ent'
-                      required={false}
-                      value={negociacao?.qtd_parc_ent ?? 0}
-                      onChange={(val) => {
-                        setNegociacao({
-                          ...negociacao,
-                          qtd_parc_ent: parseInt(val.target.value),
-                        });
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-2 w-44">
-                    <Label htmlFor="data_pri_parc_entr">
-                      Data inical Parc. Entrada
-                    </Label>
-                    <InputDateForm
-                      className={"w-full"}
-                      field={negociacao?.data_pri_parc_entr}
-                      onClickDay={handleChangeDataIniciaEntrada}
-                    />
-                  </div>
-                  <div className="space-y-2 flex flex-col m-1">
-                    <Label>Data final Entrada</Label>
-                    <InputDateForm
-                      field={negociacao?.data_ult_parc_entr}
-                      onClickDay={handleChangeDataFinalEntrada}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-flow-col gap-1 m-2 items-start justify-start">
-                  <div className="flex flex-col items-start space-y-2 w-36">
-                    <Label htmlFor="val_parc">Valor Parcela</Label>
-                    <Input
-                      id="val_parc"
-                      type="number"
-                      required
-                      step="0.01"
-                      min="0"
-                      value={negociacao?.val_parc}
-                    />
-                  </div>
-                  <div className="flex flex-col items-start space-y-2">
-                    <Label htmlFor="data_pri_parc">
-                      Primeira Parcela Acordo
-                    </Label>
-                    <InputDateForm
-                      className={"w-full"}
-                      id="data_pri_parc"
-                      field={negociacao?.data_pri_parc}
-                      onClickDay={hundleChengeDataPriParc}
-                    />
-                  </div>
-                  <div className="flex flex-col items-start space-y-2">
-                    <Label htmlFor="data_ult_parc">Última Parcela Acordo</Label>
-                    <InputDateForm
-                      id="data_ult_parc"
-                      className={"w-full"}
-                      field={negociacao?.data_ult_parc}
-                      onClickDay={hundleChengeDataUltParc}
-                    />
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
             <AccordionItem value="item-2">
               <AccordionTrigger className="w-full flex p-1  pl-2 bg-gray-400 backdrop-blur-sm rounded ">
                 Parcelamento Entrada (quando houver)
@@ -627,7 +654,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
       toast("Verifique a Qtd de Parcelas. ", {
         action: {
           label: "ok",
-          onClick: () => {},
+          onClick: () => { },
         },
       });
     }

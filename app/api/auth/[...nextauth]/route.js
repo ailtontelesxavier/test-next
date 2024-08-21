@@ -95,7 +95,7 @@ const authOptions = {
       //if (!token.forceNewToken && getCurrentEpochTime() > token['exp']) {
       if (!valide) {
         //delete token.access_token;
-        signOut();
+        //signOut();
         return null;
       }
       
