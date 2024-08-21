@@ -48,6 +48,15 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [data_ult_parc_entr, setData_ult_parc_entr] = useState(
     negociacao?.data_ult_parc_entr
   );
+
+  const [data_pri_parc, setData_pri_parc] = useState(
+    negociacao?.data_pri_parc
+  );
+
+  const [data_ult_parc, setData_ult_parc] = useState(
+    negociacao?.data_ult_parc
+  );
+
   const [isBusca, setIsBusca] = useState(true);
 
   const router = useRouter();
@@ -88,6 +97,8 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
     isBusca,
     negociacao?.data_pri_parc_entr,
     negociacao?.data_ult_parc_entr,
+    negociacao?.data_pri_parc,
+    negociacao?.data_ult_parc,
   ]);
 
   function handleNegociacao(event: FormEvent) {
@@ -638,7 +649,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
     setData_pri_parc_entr(value);
 
     if (negociacao?.qtd_parc_ent) {
-      const dataComMesesAdicionados = addMonths(value, negociacao.qtd_parc_ent);
+      const dataComMesesAdicionados = addMonths(value, parseInt(negociacao.qtd_parc_ent)-1);
 
       var dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
       console.log(dataFinal.toISOString().substring(0, 10));
@@ -651,20 +662,28 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
         data_pri_parc_entr: value.toISOString().substring(0, 10),
       });
     } else {
-      toast("Verifique a Qtd de Parcelas. ", {
-        action: {
-          label: "ok",
-          onClick: () => { },
-        },
-      });
+      setError("Verifique a Qtd de Parcelas. ");
     }
   }
 
   function hundleChengeDataPriParc(value: any) {
-    setNegociacao({
-      ...negociacao,
-      data_pri_parc: value.toISOString().substring(0, 10),
-    });
+    setData_pri_parc(value);
+
+    if (negociacao?.qtd) {
+      const dataComMesesAdicionados = addMonths(value, parseInt(negociacao?.qtd)-1);
+
+      var dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
+
+      // Atualiza a data final da parcela de entrada
+      setData_ult_parc(dataFinal);
+      setNegociacao({
+        ...negociacao,
+        data_ult_parc: dataFinal.toISOString().substring(0, 10),
+        data_pri_parc: value.toISOString().substring(0, 10),
+      });
+    } else {
+      setError("Verifique a Qtd de Parcelas. ");
+    }
   }
 
   function hundleChengeDataUltParc(value: any) {

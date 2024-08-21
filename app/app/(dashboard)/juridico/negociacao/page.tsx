@@ -77,23 +77,28 @@ export default function NegociacaoView() {
   }
 
   async function deleteNegociacao(obj: any) {
-    /* try {
-          console.log(perfil.id)
-          console.log(obj.id)
-          await api
-            .delete(`/users/user-role/?user_role_id=${obj.id}`)
-            .then((response: any) => {
-              if (response.status === 200) {
-                setSuccess("Excluido com sucesso");
-                getPerfis();
-              }
-            })
-            .catch((error) => setError("Error interno: " + error));
-        } catch (error: any) {
-          if (error.response) {
-            setError(error.response.data.detail + "; " + error.message);
+    try {
+      console.log(obj.id)
+      await api
+        .delete(`/juridico/negociacao/${obj.id}`)
+        .then((response: any) => {
+          if (response.status === 200) {
+            setSuccess("Excluido com sucesso");
+            setIsBusca(true);
           }
-        } */
+        }).catch((error) => {
+          const responseObject = JSON.parse(error.request.response)
+          var errors = ''
+          responseObject.detail.forEach((val: any) => {
+            errors += (`(Campo: ${val.loc[1]} Erro: ${val.msg}) `)
+          });
+          setError("Error interno: " + errors)
+        });
+    } catch (error: any) {
+      if (error.response) {
+        setError(error.response.data.detail + "; " + error.message);
+      }
+    }
   }
 
   function filtrar() {
