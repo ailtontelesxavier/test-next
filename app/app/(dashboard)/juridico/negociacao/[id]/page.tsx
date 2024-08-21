@@ -115,6 +115,49 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
     try {
       //delete negociacao.id
       console.log(negociacao)
+
+      setNegociacao({
+        ...negociacao,
+        processo: negociacao.processo || '',
+        executado: negociacao.executado || '',
+        contrato: negociacao.contrato || '',
+        val_devido: negociacao.val_devido || null,
+      })
+      /*
+
+        processo=negociacao.processo,
+        executado=negociacao.executado,
+        contrato=negociacao.contrato,
+        val_devido=(
+            negociacao.val_devido
+            if negociacao.val_devido is not None
+            else Decimal(0)
+        ),
+        val_desconto=(
+            negociacao.val_desconto
+            if negociacao.val_desconto is not None
+            else Decimal(0)
+        ),
+        val_neg=negociacao.val_neg,
+        data_pri_parc=(negociacao.data_pri_parc),  # type: ignore
+        data_ult_parc=negociacao.data_ult_parc,  # type: ignore
+        val_entrada=negociacao.val_entrada,  # type: ignore
+        qtd_parc_ent=negociacao.qtd_parc_ent,  # type: ignore
+        data_pri_parc_entr=negociacao.data_pri_parc_entr,  # type: ignore
+        data_ult_parc_entr=negociacao.data_ult_parc_entr,  # type: ignore
+        obs_val_neg=negociacao.obs_val_neg,
+        is_term_ex_jud=negociacao.is_term_ex_jud,
+        is_hom_ext_jud=negociacao.is_hom_ext_jud,
+        qtd=negociacao.qtd,
+        taxa_mes=negociacao.taxa_mes,
+        val_parc=negociacao.val_parc,
+        is_cal_parc_mensal=negociacao.is_cal_parc_mensal,
+        is_cal_parc_entrada=negociacao.is_cal_parc_entrada,
+        is_descumprido=negociacao.is_descumprido,
+        is_liquidado=negociacao.is_liquidado,
+        is_retorno_execucao=negociacao.is_retorno_execucao,
+
+      */
       await api
         .post("/juridico/negociacao", {
           ...negociacao,
