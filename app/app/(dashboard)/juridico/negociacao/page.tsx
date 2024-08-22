@@ -87,6 +87,9 @@ export default function NegociacaoView() {
             setIsBusca(true);
           }
         }).catch((error) => {
+          if (error.response.status === 409) {
+            setError("Já cadastrado");
+          }
           const responseObject = JSON.parse(error.request.response)
           var errors = ''
           responseObject.detail.forEach((val: any) => {

@@ -35,6 +35,7 @@ import InputDate from "@/components/input-data";
 import { Separator } from "@/components/ui/separator";
 import TableParcelamento from "../_components/tableParcelamento";
 import { Icons } from "@/components/icons";
+import FormParcela from "../_components/formParcela";
 
 export default function FormNegociacao({ params }: { params: { id: number } }) {
   const [error, setError] = useState("");
@@ -177,9 +178,12 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
           if (response.status === 201) {
             setSuccess("Cadastrado com sucesso");
           }
-          router.push('/app/juridico/negociacao/'+response.data.id);
+          router.push('/app/juridico/negociacao/' + response.data.id);
         })
         .catch((error) => {
+          if (error.response.status === 409) {
+            setError("Já cadastrado");
+          }
           //console.log(JSON.parse(error.request.response).detail)
           const responseObject = JSON.parse(error.request.response)
           var errors = ''
@@ -441,7 +445,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
                 }
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 w-48">
               <Label htmlFor="taxa_mes">Taxa de Correção ao mês</Label>
               <Input
                 id="taxa_mes"
@@ -570,6 +574,9 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
               <input hidden={true} name="data_ult_parc" value={negociacao?.data_ult_parc} />
             </div>
           </div>
+          <div>
+            { negociacao?.id && <FormParcela id={0} negociacao_id={negociacao?.id} setIsBusca={setIsBusca} />}
+          </div>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-2">
               <AccordionTrigger className="w-full flex p-1  pl-2 bg-gray-400 backdrop-blur-sm rounded ">
@@ -647,7 +654,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
     setData_pri_parc_entr(value);
 
     if (negociacao?.qtd_parc_ent) {
-      const dataComMesesAdicionados = addMonths(value, parseInt(negociacao.qtd_parc_ent)-1);
+      const dataComMesesAdicionados = addMonths(value, parseInt(negociacao.qtd_parc_ent) - 1);
 
       var dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
       console.log(dataFinal.toISOString().substring(0, 10));
@@ -668,7 +675,7 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
     setData_pri_parc(value);
 
     if (negociacao?.qtd) {
-      const dataComMesesAdicionados = addMonths(value, parseInt(negociacao?.qtd)-1);
+      const dataComMesesAdicionados = addMonths(value, parseInt(negociacao?.qtd) - 1);
 
       var dataFinal = obterProximoDiaUtil(dataComMesesAdicionados);
 

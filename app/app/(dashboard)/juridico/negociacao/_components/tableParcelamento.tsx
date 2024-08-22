@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import FormParcela from "./formParcela";
+import AlertDialogComp from "@/components/AlertDialog";
 export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2, negociacao_id: number }) {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -31,8 +32,9 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
 
     useEffect(() => {
 
-        if (negociacao_id > 0) obterParcelamentoList();
+        if (negociacao_id > 0 && isBusca) obterParcelamentoList();
 
+        setIsBusca(false)
         async function obterParcelamentoList() {
             try {
                 setLoading(true);
@@ -46,22 +48,19 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
                 if (error.response) {
                     setError(error.response.data.detail + "; " + error.message);
                 }
-            }finally{
+            } finally {
                 setLoading(false);
             }
         }
 
-    }, [page, negociacao_id, type])
+    }, [page, negociacao_id, type, isBusca])
 
-    function formatDate(date:any){
+    function formatDate(date: any) {
         return format(formatUtcDate(date), 'dd-MM-yyyy', { locale: ptBR });
     };
 
     return (
         <div className="mt-2 space-y-2">
-            <div>
-                <FormParcela id={0} negociacao_id={negociacao_id} setIsBusca={setIsBusca}/>
-            </div>
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -76,7 +75,7 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+                    {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
                     {parcelamentoLis.map((parcelamento: any, i: number) => (
                         <>
                             <TableRow key={i}>
@@ -112,8 +111,14 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
                                 <TableCell>
                                     {parcelamento.is_val_juros}
                                 </TableCell>
-                                <TableCell>
-                                    <FormParcela id={parcelamento.id} negociacao_id={negociacao_id} setIsBusca={setIsBusca}/>
+                                <TableCell className="flex gap-1">
+                                    <FormParcela id={parcelamento.id} negociacao_id={negociacao_id} setIsBusca={setIsBusca} />
+                                    <AlertDialogComp
+                                        title="Tem certeza que deseja excluir?"
+                                        description=""
+                                        param={parcelamento}
+                                        acao={deleteParcela}
+                                    />
                                 </TableCell>
                             </TableRow>
 
@@ -139,4 +144,29 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
             </section>
         </div>
     );
+
+    async function deleteParcela(obj: any) {
+        try {
+          //console.log(obj.id)
+          await api
+            .delete(`/juridico/parcelamento/${obj.id}`)
+            .then((response: any) => {
+              if (response.status === 200) {
+                setSuccess("Excluido com sucesso");
+                setIsBusca(true);
+              }
+            }).catch((error) => {
+              const responseObject = JSON.parse(error.request.response)
+              var errors = ''
+              responseObject.detail.forEach((val: any) => {
+                errors += (`(Campo: ${val.loc[1]} Erro: ${val.msg}) `)
+              });
+              setError("Error interno: " + errors)
+            });
+        } catch (error: any) {
+          if (error.response) {
+            setError(error.response.data.detail + "; " + error.message);
+          }
+        }
+      }
 }
