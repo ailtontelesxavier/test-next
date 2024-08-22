@@ -48,7 +48,7 @@ export default function FormParcela({
         console.log(parcela?.data)
       });
     }
-  }, [id, modalIsOpen, setIsBusca, parcela?.type]);
+  }, [id, modalIsOpen, setIsBusca, parcela?.type, parcela?.data]);
 
   function closeModal() {
     setModalIsOpen(false);

@@ -555,7 +555,6 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
               </Label>
               <InputDateForm
                 className={"w-full"}
-                id="data_pri_parc"
                 field={negociacao?.data_pri_parc}
                 onClickDay={hundleChengeDataPriParc}
               />
@@ -564,7 +563,6 @@ export default function FormNegociacao({ params }: { params: { id: number } }) {
             <div className="flex flex-col items-start space-y-2">
               <Label htmlFor="data_ult_parc">Última Parcela Acordo</Label>
               <InputDateForm
-                id="data_ult_parc"
                 className={"w-full"}
                 field={negociacao?.data_ult_parc}
                 onClickDay={hundleChengeDataUltParc}
