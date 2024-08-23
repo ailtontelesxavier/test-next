@@ -64,7 +64,7 @@ export default function SideNavbar({}: Props) {
         },
         {
           title:"Relatórios",
-          href:"/app/permissions/gestao-permissao-user",
+          href:"/app/juridico/relatorio",
           icon: File,
           variante: "ghost"
         },
