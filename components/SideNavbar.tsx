@@ -52,7 +52,7 @@ export default function SideNavbar({}: Props) {
       submenu: [
         {
           title:"Dashboard",
-          href:"/app/permissions/gestao-permissao",
+          href:"/app/juridico/dashboard/",
           icon: LayoutDashboard,
           variante: "ghost"
         },
@@ -107,12 +107,6 @@ export default function SideNavbar({}: Props) {
           variant: "ghost",
         },
       ],
-    },
-    {
-      title: "Ordrs",
-      href: "/orders",
-      icon: ShoppingCart,
-      variant: "ghost",
     },
     {
       title: "Settings",
