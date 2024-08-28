@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Nav } from "./nav";
 import { BackpackIcon } from "@radix-ui/react-icons";
@@ -21,6 +21,7 @@ import {
 import { Button } from "./ui/button";
 
 import { useWindowWidth } from "@react-hook/window-size";
+import api from "@/lib/api";
 
 export default function SideNavbar({}: Props) {
   const { data: session } = useSession();
@@ -30,6 +31,27 @@ export default function SideNavbar({}: Props) {
   const onlyWidth = useWindowWidth();
   const mobileWidth = onlyWidth < 768;
   const router = useRouter();
+
+  const [modulos, setModulos] = useState([]);
+  
+
+  useEffect(()=>{
+
+    obterModulos();
+
+    async function obterModulos(){
+      await api.get('/auth/modules').then((response) => {
+        setModulos(response.data.modules);
+    })
+    .catch((error) => {
+        const responseObject = JSON.parse(error.request.response);
+        var errors = "";
+        responseObject.detail.forEach((val: any) => {
+            errors += `(Campo: ${val.loc[1]} Erro: ${val.msg}) `;
+        });
+    });
+    }
+  },[])
 
   const links = [
     {
@@ -124,6 +146,11 @@ export default function SideNavbar({}: Props) {
     setIsPermissionSubmenuOpen(!isPermissionSubmenuOpen);
   }
 
+  // Filtrando os links com base nos módulos disponíveis
+  const filteredLinks = links.filter(link => 
+    modulos.some(module => module.title === link.title)
+  );
+
   return (
     <div className="relative min-w-[80px] border-r px-3  pb-10 pt-24 ">
       {!mobileWidth && (
@@ -139,7 +166,7 @@ export default function SideNavbar({}: Props) {
       )}
       <Nav
         isCollapsed={mobileWidth ? true : isCollapsed}
-        links={links.map((link) => ({
+        links={filteredLinks.map((link) => ({
           ...link,
           isActive: router.pathname === link.href,
           submenu: link.submenu?.map((sublink) => ({
