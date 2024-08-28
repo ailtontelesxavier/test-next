@@ -132,9 +132,17 @@ export default function SideNavbar({}: Props) {
     },
     {
       title: "Settings",
-      href: "/settings",
+      href: "#",
       icon: Settings,
       variant: "ghost",
+      submenu: [
+        {
+          title:"Alterar Senha",
+          href:"/app/settings/senha/",
+          icon: Lock,
+          variante: "ghost"
+        },
+      ]
     },
   ];
 
