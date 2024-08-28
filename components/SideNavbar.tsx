@@ -46,7 +46,7 @@ export default function SideNavbar({}: Props) {
     },
     {
       title:'Juridico',
-      href: '/app/juridico',
+      href: '#',
       icon: BackpackIcon,
       variant: 'ghost',
       submenu: [
