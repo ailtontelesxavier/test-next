@@ -166,7 +166,7 @@ export default function SideNavbar({}: Props) {
       )}
       <Nav
         isCollapsed={mobileWidth ? true : isCollapsed}
-        links={filteredLinks.map((link) => ({
+        links={links.map((link) => ({
           ...link,
           isActive: router.pathname === link.href,
           submenu: link.submenu?.map((sublink) => ({
