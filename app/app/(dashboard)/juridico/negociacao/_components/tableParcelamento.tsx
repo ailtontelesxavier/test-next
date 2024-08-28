@@ -65,6 +65,11 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
         return format(formatUtcDate(date), 'dd-MM-yyyy', { locale: ptBR });
     };
 
+    function setPageN(numero: number){
+        setIsBusca(true);
+        setPage(numero);
+    }
+
     return (
         <div className="mt-2 space-y-2">
             <Table>
@@ -136,7 +141,7 @@ export default function TableParcelamento({ type, negociacao_id }: { type: 1 | 2
                 <PaginationActionsApi
                     itensPerPage={10}
                     count={total}
-                    setPageIndex={setPage}
+                    setPageIndex={setPageN}
                     pageIndex={page}
                 />
             </section>
