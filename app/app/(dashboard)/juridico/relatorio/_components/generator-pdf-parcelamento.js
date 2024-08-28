@@ -14,9 +14,9 @@ function generatePdfParcelamento(data, username) {
       return [
         { text: item.id, fontSize: 8 },
         { text: item.numero_parcela, fontSize: 8 },
-        { text: item.negociacao__processo, fontSize: 8 },
+        { text: item.processo, fontSize: 8 },
         {
-          text: item.negociacao__executado,
+          text: item.executado,
           fontSize: 8,
         },
         { text: item.type==1 ? 'Contrato' : 'Entrada', fontSize: 8, alignment: "center" },
