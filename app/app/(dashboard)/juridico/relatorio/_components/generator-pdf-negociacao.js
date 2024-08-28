@@ -10,6 +10,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 function generatePDF(data, username) {
   try {
     //let dadosMultiplicados = Array(40).fill(dados).flat();
+    console.log(data)
     const content = data.map((item) => {
       return [
         { text: item.id, fontSize: 8 },
