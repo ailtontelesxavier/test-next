@@ -1,5 +1,4 @@
 import NextAuth from "next-auth";
-import { signOut } from "next-auth/react";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 import api from "@/lib/api";
@@ -87,6 +86,7 @@ const authOptions = {
         token["refresh_token"] = backendResponse.refresh_token;
 
         const decoded = decodeJwt(backendResponse.access_token);
+        //console.log(decoded)
         token['exp'] = decoded.exp;
         token['sub'] = decoded.sub;
         return token;

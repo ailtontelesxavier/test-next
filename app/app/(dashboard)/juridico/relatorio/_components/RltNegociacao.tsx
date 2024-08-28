@@ -64,6 +64,8 @@ export default function RltNegociacao() {
 
   const [loading, setLoading] = useState(true);
 
+  var _session: any = session;
+
   useEffect(() => {
     setLoading(false);
   }, []);
@@ -75,17 +77,15 @@ export default function RltNegociacao() {
       setError("Selecione o tipo de relatorio");
       return;
     }
-    var _session: any = session;
-    console.log(_session);
     setLoading(true);
     const response = await rltNegociacao(formData);
     console.log(response)
     switch (formData.get('tipo')) {
       case "1":
-        generatePDF(response, '_session?.user.username');
+        generatePDF(response, _session?.sub);
         break;
       case "2":
-        generatePdfParcelamento(response, '_session?.user.username');
+        generatePdfParcelamento(response, _session?.sub);
         break;
     }
     setLoading(false);
