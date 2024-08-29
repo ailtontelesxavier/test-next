@@ -33,25 +33,25 @@ export default function SideNavbar({}: Props) {
   const router = useRouter();
 
   const [modulos, setModulos] = useState([]);
-  
 
-  useEffect(()=>{
-
+  useEffect(() => {
     obterModulos();
 
-    async function obterModulos(){
-      await api.get('/auth/modules').then((response) => {
-        setModulos(response.data.modules);
-    })
-    .catch((error) => {
-        const responseObject = JSON.parse(error.request.response);
-        var errors = "";
-        responseObject.detail.forEach((val: any) => {
+    async function obterModulos() {
+      await api
+        .get("/auth/modules")
+        .then((response) => {
+          setModulos(response.data.modules);
+        })
+        .catch((error) => {
+          const responseObject = JSON.parse(error.request.response);
+          var errors = "";
+          responseObject.detail.forEach((val: any) => {
             errors += `(Campo: ${val.loc[1]} Erro: ${val.msg}) `;
+          });
         });
-    });
     }
-  },[])
+  }, []);
 
   const links = [
     {
@@ -67,30 +67,30 @@ export default function SideNavbar({}: Props) {
       variant: "ghost",
     },
     {
-      title:'Juridico',
-      href: '#',
+      title: "Juridico",
+      href: "#",
       icon: BackpackIcon,
-      variant: 'ghost',
+      variant: "ghost",
       submenu: [
         {
-          title:"Dashboard",
-          href:"/app/juridico/dashboard/",
+          title: "Dashboard",
+          href: "/app/juridico/dashboard/",
           icon: LayoutDashboard,
-          variante: "ghost"
+          variante: "ghost",
         },
         {
-          title:"Negociação de Credito",
-          href:"/app/juridico/negociacao",
+          title: "Negociação de Credito",
+          href: "/app/juridico/negociacao",
           icon: File,
-          variante: "ghost"
+          variante: "ghost",
         },
         {
-          title:"Relatórios",
-          href:"/app/juridico/relatorio",
+          title: "Relatórios",
+          href: "/app/juridico/relatorio",
           icon: File,
-          variante: "ghost"
+          variante: "ghost",
         },
-      ]
+      ],
     },
     {
       title: "Permission",
@@ -99,16 +99,16 @@ export default function SideNavbar({}: Props) {
       variant: "ghost",
       submenu: [
         {
-          title:"Gestao Perfil",
-          href:"/app/permissions/gestao-permissao",
+          title: "Gestao Perfil",
+          href: "/app/permissions/gestao-permissao",
           icon: File,
-          variante: "ghost"
+          variante: "ghost",
         },
         {
-          title:"Perfil por Usuario",
-          href:"/app/permissions/gestao-permissao-user",
+          title: "Perfil por Usuario",
+          href: "/app/permissions/gestao-permissao-user",
           icon: File,
-          variante: "ghost"
+          variante: "ghost",
         },
         {
           title: "Perfil",
@@ -137,12 +137,12 @@ export default function SideNavbar({}: Props) {
       variant: "ghost",
       submenu: [
         {
-          title:"Alterar Senha",
-          href:"/app/settings/senha/",
+          title: "Alterar Senha",
+          href: "/app/settings/senha/",
           icon: Lock,
-          variante: "ghost"
+          variante: "ghost",
         },
-      ]
+      ],
     },
   ];
 
@@ -155,8 +155,8 @@ export default function SideNavbar({}: Props) {
   }
 
   // Filtrando os links com base nos módulos disponíveis
-  const filteredLinks = links.filter(link => 
-    modulos.some(module => module.title === link.title)
+  const filteredLinks = links.filter((link) =>
+    modulos.some((module) => module.title === link.title)
   );
 
   return (
@@ -184,7 +184,15 @@ export default function SideNavbar({}: Props) {
         }))}
       />
       <div className="flex w-full items-center justify-center">
-        {session ? <Button variant={"ghost"} onClick={() => signOut()}>Sair</Button> : <Button variant={"ghost"} onClick={() => signIn()}>Entrar</Button>}
+        {session ? (
+          <Button variant={"ghost"} onClick={() => signOut()}>
+            Sair
+          </Button>
+        ) : (
+          <Button variant={"ghost"} onClick={() => signIn()}>
+            Entrar
+          </Button>
+        )}
       </div>
     </div>
   );
