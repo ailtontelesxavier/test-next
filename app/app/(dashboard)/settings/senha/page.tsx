@@ -1,6 +1,5 @@
 "use client";
 
-//import qs from 'qs';
 import { useState, useMemo, useEffect, FormEvent } from "react";
 import {
     Card,
