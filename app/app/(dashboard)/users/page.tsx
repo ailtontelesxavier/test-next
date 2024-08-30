@@ -14,6 +14,7 @@ import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { Icons } from "@/components/icons";
+import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { PaginationActionsApi } from "@/components/paginationActionsApi";
@@ -23,6 +24,7 @@ type UserType = {
   id: string;
   username: string;
   email: string;
+  is_active: boolean;
 };
 
 
@@ -55,6 +57,15 @@ export default function UsersPage({ }: Props) {
     {
       accessorKey: "email",
       header: "Email",
+    },
+    {
+      accessorKey: "is_active",
+      header: "Ativo",
+      cell: ({ row }) => {
+        return (
+          <>{row.getValue("is_active") ? <CheckIcon className="h-4 w-4" /> : <Cross2Icon className="h-4 w-4" />}</>
+        );
+      },
     },
   ];
 

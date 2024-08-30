@@ -10,6 +10,7 @@ import { format, parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import AcoesUser from "../_components/AcoesUser";
+import { QRCodeSVG } from "qrcode.react";
 
 
 export default function UserFormPage({ params }: { params: { id: number } }) {
@@ -21,6 +22,7 @@ export default function UserFormPage({ params }: { params: { id: number } }) {
   const [is_active, setIs_active] = useState(false);
   const [created_at, setCreated_at] = useState<Date>();
   const [updated_at, setUpdated_at] = useState<Date>();
+  const [otp_base32, setOtp_base32] = useState('');
 
   
   useEffect(() => {
@@ -37,6 +39,7 @@ export default function UserFormPage({ params }: { params: { id: number } }) {
           setIs_active(response.data.is_active);
           setCreated_at(response.data.created_at);
           setUpdated_at(response.data.updated_at);
+          setOtp_base32(response.data.qr_code);
         }
       });
     } catch (error:any) {
@@ -147,6 +150,10 @@ export default function UserFormPage({ params }: { params: { id: number } }) {
                   )
                 }
               />
+            </div>
+            <div>
+              <Label>OTP</Label>
+              { otp_base32 && <QRCodeSVG value={otp_base32} className="h-52 w-52" />}
             </div>
           </div>
           <div className="flex mt-5 gap-4 w-full justify-end">
