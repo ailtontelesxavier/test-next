@@ -21,9 +21,9 @@ export default function ComboboxPerfil(
 
   useEffect(() => {
 
-    getModel(page);
+    getModel();
 
-    async function getModel(page) {
+    async function getModel() {
       await api.get(`/permissoes/role/find/?name=${searchTerm}&page=${page}&page_size=5`)
         .then(response => {
           //console.log(response.data.roles)

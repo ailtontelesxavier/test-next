@@ -64,7 +64,15 @@ export default function GestaoPermissaoUser() {
             getPerfis();
           }
         })
-        .catch((error) => setError("Error interno: " + error));
+        .catch((error) => {
+          //console.log(JSON.parse(error.request.response).detail)
+           if (error.response.status === 400) {
+            setError("Já cadastrado");
+            return;
+          }
+          const responseObject = JSON.parse(error.request.response)
+          setError(responseObject.detail)
+        });
     } catch (error: any) {
       if (error.response) {
         setError(error.response.data.detail + "; " + error.message);
@@ -85,10 +93,13 @@ export default function GestaoPermissaoUser() {
           setPerfilList(response.data);
           setTotal(response.data.total_records)
         }).catch((error) => {
-          console.error("error interno", error);
+          const responseObject = JSON.parse(error.request.response)
+          setError(responseObject.detail)
         });
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (error:any) {
+      if (error.response) {
+        setError(error.response.data.detail + "; " + error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -105,7 +116,10 @@ export default function GestaoPermissaoUser() {
             getPerfis();
           }
         })
-        .catch((error) => setError("Error interno: " + error));
+        .catch((error) => {
+          const responseObject = JSON.parse(error.request.response)
+          setError(responseObject.detail)
+        });
     } catch (error: any) {
       if (error.response) {
         setError(error.response.data.detail + "; " + error.message);

@@ -26,9 +26,9 @@ export default function ComboboxUser({
 
   useEffect(() => {
     console.log(page);
-    getModel(page);
+    getModel();
 
-    async function getModel(page) {
+    async function getModel() {
       try {
         setLoading(true);
         await api
@@ -39,11 +39,6 @@ export default function ComboboxUser({
             console.log(response.data.rows);
             setOptions(response.data.rows)
             setTotal(response.data.total_records);
-             setOptions((dados) =>
-              page === 1
-                ? response.data.rows
-                : [...dados, ...response.data.rows]
-            );
           })
           .catch((error) => {
             console.error("There was an error fetching the options!", error);
@@ -109,7 +104,7 @@ export default function ComboboxUser({
       />
       {hasFocus && filteredOptions.length > 0 && (
         <>
-          <div ref={listRef} onScroll={handleScroll} className="absolute z-10 h-52 mt-1 max-h-60 w-full overflow-auto rounded-md border border-card bg-card shadow-lg">
+          <div ref={listRef} /* onScroll={handleScroll} */ className="absolute z-10 h-52 mt-1 max-h-60 w-full overflow-auto rounded-md border border-card bg-card shadow-lg">
             <ul className="py-1">
               {filteredOptions.map((option) => (
                 <li
