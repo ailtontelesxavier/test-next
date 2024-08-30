@@ -2,7 +2,7 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import Image from "next/image";
-import {base64_image_logo} from '@/lib/utils';
+import {base64_image_logo, formatarData} from '@/lib/utils';
 import { format } from "date-fns";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -19,11 +19,20 @@ function generatePDF(data, username) {
           text: item.executado,
           fontSize: 8,
         },
-        { text: item.val_devido, fontSize: 8, alignment: "right" },
-        { text: item.val_neg, fontSize: 8, alignment: "right" },
+        { text: item.val_devido ? new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+          }).format(item.val_devido): '', fontSize: 8, alignment: "right" },
+        { text: item.val_neg ? new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+          }).format(item.val_neg): '', fontSize: 8, alignment: "right" },
         { text: item.taxa_mes, fontSize: 8, alignment: "center" },
         { text: item.qtd, fontSize: 8, alignment: "center" },
-        { text: item.val_parc, fontSize: 8, alignment: "right" },
+        { text: item.val_parc ? new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+          }).format(item.val_parc): '', fontSize: 8, alignment: "right" },
       ];
     });
 
@@ -150,7 +159,10 @@ function generatePDF(data, username) {
         // Seção separada para exibir o total
         {
           text: `Total Valor Negociado: ${
-            !Number.isNaN(totalField3) ? totalField3.toFixed(2) : 0
+            !Number.isNaN(totalField3) ? new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+          }).format(totalField3.toFixed(2)): 0
           }`,
           margin: [0, 20, 0, 0], // Margem superior
           fontSize: 9,

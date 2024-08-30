@@ -1,7 +1,7 @@
 'use client'
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import {base64_image_logo} from '@/lib/utils';
+import {base64_image_logo, formatarData} from '@/lib/utils';
 import { format } from "date-fns";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -20,10 +20,17 @@ function generatePdfParcelamento(data, username) {
           fontSize: 8,
         },
         { text: item.type==1 ? 'Contrato' : 'Entrada', fontSize: 8, alignment: "center" },
-        { text: item.data, fontSize: 8, alignment: "center" },
-        { text: item.val_parcela, fontSize: 8, alignment: "right" },
-        { text: item.val_pago, fontSize: 8, alignment: "right" },
-        { text: item.data_pgto, fontSize: 8, alignment: "center" },
+        { text: item.data && formatarData(item.data), fontSize: 8, alignment: "center" },
+        { text: item.val_parcela ? new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+          }).format(item.val_parcela): '',
+          fontSize: 8, alignment: "right" },
+        { text: item.val_pago ? new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+          }).format(item.val_pago): '', fontSize: 8, alignment: "right" },
+        { text: item.data_pgto && formatarData(item.data_pgto), fontSize: 8, alignment: "center" },
         {
           text: item.is_val_juros ? "S" : "N",
           fontSize: 8,
