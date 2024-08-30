@@ -31,7 +31,7 @@ export default function Component() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="tipo-acordo">Tipo de Acordo</Label>
-            <Select id="tipo-acordo">
+            <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o tipo de acordo" />
               </SelectTrigger>
